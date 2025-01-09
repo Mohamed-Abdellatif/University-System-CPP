@@ -10,7 +10,10 @@ using namespace std;
 int main() {
     // Display a simple program header
     cout << "===== C++ Program =====" << endl;
-
+    int x = 10;
+    int y = 5;
+    int z = x + y;
+    cout << z << endl;
     // TODO: Add your implementation here.
 
     return 0;
