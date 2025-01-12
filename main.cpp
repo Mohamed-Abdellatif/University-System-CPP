@@ -69,14 +69,14 @@ public:
     Binary_tree_course_node(Course *c) : course(c), left(NULL), right(NULL) {}
 };
 
-class doubly_student_node // Node for Doubly Linked List of Course Enrollment History
+class doublyStudentNode // Node for Doubly Linked List of Course Enrollment History
 {
 public:
     Student *student;
-    doubly_student_node *next;
-    doubly_student_node *prev;
+    doublyStudentNode *next;
+    doublyStudentNode *prev;
 
-    doubly_student_node(Student *s) : student(s), next(NULL), prev(NULL) {}
+    doublyStudentNode(Student *s) : student(s), next(NULL), prev(NULL) {}
 };
 
 class Singly_StudentDatabase // Singly Linked List for Student Records
@@ -270,6 +270,34 @@ public:
         }
         cout << "Course not found." << endl;
     }
+};
+
+class doublyEnrollmentHistory
+{
+public:
+    doublyStudentNode *head = NULL;
+
+    void addEnrollmentRecord(Student* enrolledStudent)
+    {
+        doublyStudentNode *newNode = new doublyStudentNode(enrolledStudent);
+
+        if (!head)
+        {
+            head = newNode;           
+            return;
+        }
+
+        doublyStudentNode *temp = head;
+
+        while (temp->next)
+        {
+            temp = temp->next;
+        }
+
+        temp->next = newNode;
+        newNode->prev = temp;
+    }
+
 };
 
 int main()
