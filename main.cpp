@@ -11,7 +11,7 @@
 //---------------------------------------Omar Part----------------------------------
 // 3. Course Enrollment History: Employ a Double Linked List (DLL) to track each
 // student's course history.
-// 4. Course Prerequisites: Use a Stack to validate prerequisites for course registration.
+// 4. Course Prerequisites: Use a Stack to valIDate prerequisites for course registration.
 //
 //---------------------------------------Mazen Part---------------------------------
 // 5. Course Waitlists: Manage waitlists with a Queue.
@@ -31,25 +31,21 @@ using namespace std;
 class Student // Student Class
 {
 public:
-    long long id;
-    string name;
-    string email;
-    long long phone;
-    string address;
-    string password;
+    long long ID, phoneNumber;
+    string name, studentEmail, studentAddress, studentPassword;
 
-    Student(long long uni_id, string uni_name, string uni_email, long long uni_phone, string uni_address, string uni_password) : id(uni_id), name(uni_name), email(uni_email), phone(uni_phone), address(uni_address), password(uni_password) {}
+    Student(long long uni_ID, string uni_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), name(uni_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password) {}
 };
 
 class Course // Course Class
 {
 public:
-    long long CourseId;
-    string CourseName;
-    long long CourseCredits;
-    string CourseInstructor;
+    long long courseID;
+    string courseName;
+    long long courseCredits;
+    string courseInstructor;
 
-    Course(long long uni_course_id, string uni_course_name, long long uni_course_credits, string uni_course_instructor) : CourseId(uni_course_id), CourseName(uni_course_name), CourseCredits(uni_course_credits), CourseInstructor(uni_course_instructor) {}
+    Course(long long uni_course_ID, string uni_course_name, long long uni_course_credits, string uni_course_instructor) : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor) {}
 };
 
 class SinglyStudentNode // Node for Singly Linked List of Student Records
@@ -87,57 +83,57 @@ public:
     SinglyStudentNode *head;
     SinglyStudentDatabase() : head(NULL) {}
 
-    void addStudentRecord(Student *s)
+    void addStudentRecord(Student *studentToBeAdded)
     {
-        SinglyStudentNode *newNode = new SinglyStudentNode(s);
+        SinglyStudentNode *newStudentNode = new SinglyStudentNode(studentToBeAdded);
         if (!head)
         {
-            head = newNode;
+            head = newStudentNode;
         }
         else
         {
-            SinglyStudentNode *temp = head;
-            while (temp->next)
+            SinglyStudentNode *tempStudentNode = head;
+            while (tempStudentNode->next)
             {
-                temp = temp->next;
+                tempStudentNode = tempStudentNode->next;
             }
-            temp->next = newNode;
+            tempStudentNode->next = newStudentNode;
         }
     }
 
-    void removeStudentByID(long long id)
+    void removeStudentByID(long long ID)
     {
-        SinglyStudentNode *temp = head;
+        SinglyStudentNode *tempStudentNode = head;
         SinglyStudentNode *prev = NULL;
-        while (temp)
+        while (tempStudentNode)
         {
-            if (temp->student->id == id)
+            if (tempStudentNode->student->ID == ID)
             {
                 if (prev)
-                    prev->next = temp->next;
+                    prev->next = tempStudentNode->next;
                 else
-                    head = temp->next;
-                delete temp;
-                cout << "Student Deleted" << endl;
+                    head = tempStudentNode->next;
+                delete tempStudentNode;
+                cout << "Student Removed." << endl;
                 return;
             }
-            prev = temp;
-            temp = temp->next;
+            prev = tempStudentNode;
+            tempStudentNode = tempStudentNode->next;
         }
     }
 
     void displayStudentDetails()
     {
-        SinglyStudentNode *temp = head;
-        while (temp)
+        SinglyStudentNode *tempStudentNode = head;
+        while (tempStudentNode)
         {
-            cout << "ID: " << temp->student->id << endl;
-            cout << "Name: " << temp->student->name << endl;
-            cout << "Email: " << temp->student->email << endl;
-            cout << "Phone: " << temp->student->phone << endl;
-            cout << "Address: " << temp->student->address << endl;
+            cout << "Student ID: " << tempStudentNode->student->ID << endl;
+            cout << "Student Name: " << tempStudentNode->student->name << endl;
+            cout << "Student Email: " << tempStudentNode->student->studentEmail << endl;
+            cout << "Student Phone Number: " << tempStudentNode->student->phoneNumber << endl;
+            cout << "Student Address: " << tempStudentNode->student->studentAddress << endl;
             cout << "---------------------------------------------------------" << endl;
-            temp = temp->next;
+            tempStudentNode = tempStudentNode->next;
         }
     }
 };
@@ -148,43 +144,43 @@ public:
     BinaryTreeCourseNode *root;
     BinaryTreeCourseDatabase() : root(NULL) {}
 
-    void addCourse(Course *c)
+    void addCourse(Course *courseToBeAdded)
     {
         if (!root)
         {
-            root = new BinaryTreeCourseNode(c);
+            root = new BinaryTreeCourseNode(courseToBeAdded);
             return;
         }
-        BinaryTreeCourseNode *temp = root;
+        BinaryTreeCourseNode *tempStudentNode = root;
         while (true)
         {
-            if (c->CourseId < temp->course->CourseId)
+            if (courseToBeAdded->courseID < tempStudentNode->course->courseID)
             {
-                if (!temp->left)
+                if (!tempStudentNode->left)
                 {
-                    temp->left = new BinaryTreeCourseNode(c);
+                    tempStudentNode->left = new BinaryTreeCourseNode(courseToBeAdded);
                     return;
                 }
-                temp = temp->left;
+                tempStudentNode = tempStudentNode->left;
             }
-            else if (c->CourseId > temp->course->CourseId)
+            else if (courseToBeAdded->courseID > tempStudentNode->course->courseID)
             {
-                if (!temp->right)
+                if (!tempStudentNode->right)
                 {
-                    temp->right = new BinaryTreeCourseNode(c);
+                    tempStudentNode->right = new BinaryTreeCourseNode(courseToBeAdded);
                     return;
                 }
-                temp = temp->right;
+                tempStudentNode = tempStudentNode->right;
             }
             else
             {
-                cout << "This Course already exists" << endl;
+                cout << "This Course already exists." << endl;
                 return;
             }
         }
     }
 
-    void dropCourse(long long courseId)
+    void dropCourse(long long courseID)
     {
         if (!root)
         {
@@ -197,12 +193,12 @@ public:
 
         while (node)
         {
-            if (courseId < node->course->CourseId)
+            if (courseID < node->course->courseID)
             {
                 parent = node;
                 node = node->left;
             }
-            else if (courseId > node->course->CourseId)
+            else if (courseID > node->course->courseID)
             {
                 parent = node;
                 node = node->right;
@@ -252,7 +248,7 @@ public:
                     node->course = successor->course;
                     parent = node;
                     node = node->right;
-                    while (node && node->course->CourseId != successor->course->CourseId)
+                    while (node && node->course->courseID != successor->course->courseID)
                     {
                         parent = node;
                         node = node->left;
@@ -281,23 +277,23 @@ public:
 
     void addEnrollmentRecord(Student* enrolledStudent)
     {
-        DoublyStudentNode *newNode = new DoublyStudentNode(enrolledStudent);
+        DoublyStudentNode *newStudentNode = new DoublyStudentNode(enrolledStudent);
 
         if (!head)
         {
-            head = newNode;           
+            head = newStudentNode;           
             return;
         }
 
-        DoublyStudentNode *temp = head;
+        DoublyStudentNode *tempStudentNode = head;
 
-        while (temp->next)
+        while (tempStudentNode->next)
         {
-            temp = temp->next;
+            tempStudentNode = tempStudentNode->next;
         }
 
-        temp->next = newNode;
-        newNode->prev = temp;
+        tempStudentNode->next = newStudentNode;
+        newStudentNode->prev = tempStudentNode;
     }
 
 };
