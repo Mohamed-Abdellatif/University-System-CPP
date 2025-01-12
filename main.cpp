@@ -30,6 +30,7 @@ using namespace std;
 
 class Student // Student Class
 {
+    // TODO: Add the course enrollment history here and add the implementation to add a course every time the student takes a new course
 public:
     long long ID, phoneNumber;
     string name, studentEmail, studentAddress, studentPassword;
@@ -275,13 +276,13 @@ class DoublyEnrollmentHistory
 public:
     DoublyStudentNode *head = NULL;
 
-    void addEnrollmentRecord(Student* enrolledStudent)
+    void addEnrollmentRecord(Student *enrolledStudent)
     {
         DoublyStudentNode *newStudentNode = new DoublyStudentNode(enrolledStudent);
 
         if (!head)
         {
-            head = newStudentNode;           
+            head = newStudentNode;
             return;
         }
 
@@ -295,18 +296,11 @@ public:
         tempStudentNode->next = newStudentNode;
         newStudentNode->prev = tempStudentNode;
     }
-
 };
 
 int main()
 {
-    // Display a simple program header
-    cout << "===== C++ Program =====" << endl;
-    int x = 10;
-    int y = 5;
-    int z = x + y;
-    cout << z << endl;
-    // TODO: Add your implementation here.
+    //TODO: add your implementation here to check if the code is working and for the rest to see your progress
 
     return 0;
 }
