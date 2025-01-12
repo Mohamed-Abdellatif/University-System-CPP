@@ -2,19 +2,21 @@
 #include <string>
 #include <windows.h>
 
-//----------------ZEYAD Part--------------------------------------------------------
+//---------------------------------------ZEYAD Part----------------------------------
 // 1. Student Records Management: Use a Single Linked List (SLL) to store and manage
 // student details.
 // 2. Course Records Management: Implement a Binary Search Tree (BST) to organize
 // and search course information.
+//
 //---------------------------------------Omar Part----------------------------------
-// 3.Course Enrollment History: Employ a Double Linked List (DLL) to track each
+// 3. Course Enrollment History: Employ a Double Linked List (DLL) to track each
 // student's course history.
 // 4. Course Prerequisites: Use a Stack to validate prerequisites for course registration.
+//
 //---------------------------------------Mazen Part---------------------------------
 // 5. Course Waitlists: Manage waitlists with a Queue.
 // 6. Search Optimization: Implement Linear and Binary Search algorithms.
-
+//
 // Important Notes
 // 1. Proper Variable Names
 // 2. Single responsibility principle
@@ -50,51 +52,51 @@ public:
     Course(long long uni_course_id, string uni_course_name, long long uni_course_credits, string uni_course_instructor) : CourseId(uni_course_id), CourseName(uni_course_name), CourseCredits(uni_course_credits), CourseInstructor(uni_course_instructor) {}
 };
 
-class singly_student_node // Node for Singly Linked List of Student Records
+class SinglyStudentNode // Node for Singly Linked List of Student Records
 {
 public:
     Student *student;
-    singly_student_node *next;
+    SinglyStudentNode *next;
 
-    singly_student_node(Student *s) : student(s), next(NULL) {}
+    SinglyStudentNode(Student *s) : student(s), next(NULL) {}
 };
 
-class Binary_tree_course_node // Node for binary tree of course records
+class BinaryTreeCourseNode // Node for binary tree of course records
 {
 public:
     Course *course;
-    Binary_tree_course_node *left;
-    Binary_tree_course_node *right;
+    BinaryTreeCourseNode *left;
+    BinaryTreeCourseNode *right;
 
-    Binary_tree_course_node(Course *c) : course(c), left(NULL), right(NULL) {}
+    BinaryTreeCourseNode(Course *c) : course(c), left(NULL), right(NULL) {}
 };
 
-class doublyStudentNode // Node for Doubly Linked List of Course Enrollment History
+class DoublyStudentNode // Node for Doubly Linked List of Course Enrollment History
 {
 public:
     Student *student;
-    doublyStudentNode *next;
-    doublyStudentNode *prev;
+    DoublyStudentNode *next;
+    DoublyStudentNode *prev;
 
-    doublyStudentNode(Student *s) : student(s), next(NULL), prev(NULL) {}
+    DoublyStudentNode(Student *s) : student(s), next(NULL), prev(NULL) {}
 };
 
-class Singly_StudentDatabase // Singly Linked List for Student Records
+class SinglyStudentDatabase // Singly Linked List for Student Records
 {
 public:
-    singly_student_node *head;
-    Singly_StudentDatabase() : head(NULL) {}
+    SinglyStudentNode *head;
+    SinglyStudentDatabase() : head(NULL) {}
 
-    void add(Student *s)
+    void addStudentRecord(Student *s)
     {
-        singly_student_node *newNode = new singly_student_node(s);
+        SinglyStudentNode *newNode = new SinglyStudentNode(s);
         if (!head)
         {
             head = newNode;
         }
         else
         {
-            singly_student_node *temp = head;
+            SinglyStudentNode *temp = head;
             while (temp->next)
             {
                 temp = temp->next;
@@ -103,10 +105,10 @@ public:
         }
     }
 
-    void del(long long id)
+    void removeStudentByID(long long id)
     {
-        singly_student_node *temp = head;
-        singly_student_node *prev = NULL;
+        SinglyStudentNode *temp = head;
+        SinglyStudentNode *prev = NULL;
         while (temp)
         {
             if (temp->student->id == id)
@@ -124,9 +126,9 @@ public:
         }
     }
 
-    void display()
+    void displayStudentDetails()
     {
-        singly_student_node *temp = head;
+        SinglyStudentNode *temp = head;
         while (temp)
         {
             cout << "ID: " << temp->student->id << endl;
@@ -140,27 +142,27 @@ public:
     }
 };
 
-class Binary_Tree_CourseDatabase // Binary Tree for Course Database
+class BinaryTreeCourseDatabase // Binary Tree for Course Database
 {
 public:
-    Binary_tree_course_node *root;
-    Binary_Tree_CourseDatabase() : root(NULL) {}
+    BinaryTreeCourseNode *root;
+    BinaryTreeCourseDatabase() : root(NULL) {}
 
     void addCourse(Course *c)
     {
         if (!root)
         {
-            root = new Binary_tree_course_node(c);
+            root = new BinaryTreeCourseNode(c);
             return;
         }
-        Binary_tree_course_node *temp = root;
+        BinaryTreeCourseNode *temp = root;
         while (true)
         {
             if (c->CourseId < temp->course->CourseId)
             {
                 if (!temp->left)
                 {
-                    temp->left = new Binary_tree_course_node(c);
+                    temp->left = new BinaryTreeCourseNode(c);
                     return;
                 }
                 temp = temp->left;
@@ -169,7 +171,7 @@ public:
             {
                 if (!temp->right)
                 {
-                    temp->right = new Binary_tree_course_node(c);
+                    temp->right = new BinaryTreeCourseNode(c);
                     return;
                 }
                 temp = temp->right;
@@ -190,8 +192,8 @@ public:
             return;
         }
 
-        Binary_tree_course_node *node = root;
-        Binary_tree_course_node *parent = NULL;
+        BinaryTreeCourseNode *node = root;
+        BinaryTreeCourseNode *parent = NULL;
 
         while (node)
         {
@@ -225,7 +227,7 @@ public:
                 }
                 else if (!node->left || !node->right) // One child
                 {
-                    Binary_tree_course_node *child = node->left ? node->left : node->right;
+                    BinaryTreeCourseNode *child = node->left ? node->left : node->right;
                     if (parent == NULL)
                     {
                         root = child;
@@ -242,7 +244,7 @@ public:
                 }
                 else // Two children
                 {
-                    Binary_tree_course_node *successor = node->right;
+                    BinaryTreeCourseNode *successor = node->right;
                     while (successor && successor->left)
                     {
                         successor = successor->left;
@@ -272,14 +274,14 @@ public:
     }
 };
 
-class doublyEnrollmentHistory
+class DoublyEnrollmentHistory
 {
 public:
-    doublyStudentNode *head = NULL;
+    DoublyStudentNode *head = NULL;
 
     void addEnrollmentRecord(Student* enrolledStudent)
     {
-        doublyStudentNode *newNode = new doublyStudentNode(enrolledStudent);
+        DoublyStudentNode *newNode = new DoublyStudentNode(enrolledStudent);
 
         if (!head)
         {
@@ -287,7 +289,7 @@ public:
             return;
         }
 
-        doublyStudentNode *temp = head;
+        DoublyStudentNode *temp = head;
 
         while (temp->next)
         {
