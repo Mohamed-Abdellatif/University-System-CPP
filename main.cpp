@@ -37,7 +37,7 @@ public:
     string name, studentEmail, studentAddress, studentPassword;
     DoublyEnrollmentHistory *enrollmentHistory;
 
-    Student(long long uni_ID, string uni_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), name(uni_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password) {}
+    Student(long long uni_ID, string uni_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), name(uni_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(nullptr) {}
 };
 
 class Course // Course Class
