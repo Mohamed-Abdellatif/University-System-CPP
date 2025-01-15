@@ -34,6 +34,7 @@ class Student // Student Class
 public:
     long long ID, phoneNumber;
     string name, studentEmail, studentAddress, studentPassword;
+    DoublyEnrollmentHistory enrollmentHistory;
 
     Student(long long uni_ID, string uni_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), name(uni_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password) {}
 };
@@ -68,14 +69,14 @@ public:
     BinaryTreeCourseNode(Course *c) : course(c), left(NULL), right(NULL) {}
 };
 
-class DoublyStudentNode // Node for Doubly Linked List of Course Enrollment History
+class DoublyEnrollmentNode // Node for Doubly Linked List of Course Enrollment History
 {
 public:
-    Student *student;
-    DoublyStudentNode *next;
-    DoublyStudentNode *prev;
+    Course *course;
+    DoublyEnrollmentNode *next;
+    DoublyEnrollmentNode *prev;
 
-    DoublyStudentNode(Student *s) : student(s), next(NULL), prev(NULL) {}
+    DoublyEnrollmentNode(Course *c) : course(c), next(NULL), prev(NULL) {}
 };
 
 class SinglyStudentDatabase // Singly Linked List for Student Records
@@ -271,30 +272,44 @@ public:
     }
 };
 
-class DoublyEnrollmentHistory
+class DoublyEnrollmentHistory // Doubly Linked List for Course Enrollment History for Students
 {
 public:
-    DoublyStudentNode *head = NULL;
+    DoublyEnrollmentNode *head = NULL;
 
-    void addEnrollmentRecord(Student *enrolledStudent)
+    void addEnrollmentRecord(Course *enrolledcourse)
     {
-        DoublyStudentNode *newStudentNode = new DoublyStudentNode(enrolledStudent);
+        DoublyEnrollmentNode *newCourseNode = new DoublyEnrollmentNode(enrolledcourse);
 
         if (!head)
         {
-            head = newStudentNode;
+            head = newCourseNode;
             return;
         }
 
-        DoublyStudentNode *tempStudentNode = head;
+        DoublyEnrollmentNode *tempCourseNode = head;
 
-        while (tempStudentNode->next)
+        while (tempCourseNode->next)
         {
-            tempStudentNode = tempStudentNode->next;
+            tempCourseNode = tempCourseNode->next;
         }
 
-        tempStudentNode->next = newStudentNode;
-        newStudentNode->prev = tempStudentNode;
+        tempCourseNode->next = newCourseNode;
+        newCourseNode->prev = tempCourseNode;
+    }
+
+    void displayEnrollmentHistory()
+    {
+        DoublyEnrollmentNode *tempCourseNode = head;
+        while (tempCourseNode)
+        {
+            cout << "Course ID: " << tempCourseNode->course->courseID << endl;
+            cout << "Course Name: " << tempCourseNode->course->courseName << endl;
+            cout << "Course Credits: " << tempCourseNode->course->courseCredits << endl;
+            cout << "Course Instructor: " << tempCourseNode->course->courseInstructor << endl;
+            cout << "---------------------------------------------------------" << endl;
+            tempCourseNode = tempCourseNode->next;
+        }
     }
 };
 
