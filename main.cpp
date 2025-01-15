@@ -27,6 +27,7 @@
 using namespace std;
 
 // Function declarations (if any) can go here.
+class DoublyEnrollmentHistory;
 
 class Student // Student Class
 {
@@ -34,7 +35,7 @@ class Student // Student Class
 public:
     long long ID, phoneNumber;
     string name, studentEmail, studentAddress, studentPassword;
-    DoublyEnrollmentHistory enrollmentHistory;
+    DoublyEnrollmentHistory *enrollmentHistory;
 
     Student(long long uni_ID, string uni_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), name(uni_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password) {}
 };
@@ -316,6 +317,6 @@ public:
 int main()
 {
     //TODO: add your implementation here to check if the code is working and for the rest to see your progress
-
+    cout << "Code working..." << endl;
     return 0;
 }
