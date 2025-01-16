@@ -60,7 +60,7 @@ public:
     SinglyStudentNode(Student *s) : student(s), next(NULL) {}
 };
 
-class BinaryTreeCourseNode // Node for binary tree of course records
+class BinaryTreeCourseNode // Node for Binary Tree of Course Records
 {
 public:
     Course *course;
@@ -86,6 +86,17 @@ public:
     SinglyStudentNode *head;
     SinglyStudentDatabase() : head(NULL) {}
 
+
+    /**
+     * @brief Adds a new student record to the singly linked list of student records.
+     *
+     * This function creates a new student node with the given student object and adds it to the end of the linked list.
+     * If the linked list is empty, the new node becomes the head of the list.
+     *
+     * @param studentToBeAdded A pointer to the student object to be added to the linked list.
+     *
+     * @return void
+     */
     void addStudentRecord(Student *studentToBeAdded)
     {
         SinglyStudentNode *newStudentNode = new SinglyStudentNode(studentToBeAdded);
@@ -104,6 +115,18 @@ public:
         }
     }
 
+
+    /**
+     * @brief Removes a student record from the singly linked list of student records based on the given ID.
+     *
+     * This function iterates through the linked list to find a student node with the matching ID.
+     * If a matching student node is found, it is removed from the linked list and the memory is deallocated.
+     * If no matching student node is found, nothing happens.
+     *
+     * @param ID The unique identifier of the student to be removed.
+     *
+     * @return void
+     */
     void removeStudentByID(long long ID)
     {
         SinglyStudentNode *tempStudentNode = head;
@@ -124,7 +147,16 @@ public:
             tempStudentNode = tempStudentNode->next;
         }
     }
+    
 
+    /**
+     * @brief Displays the details of all students in the student records database.
+     *
+     * This function iterates through the singly linked list of student records and prints the details of each student.
+     * The details include the student's ID, name, email, phone number, and address.
+     *
+     * @return void
+     */
     void displayStudentDetails()
     {
         SinglyStudentNode *tempStudentNode = head;
@@ -139,6 +171,7 @@ public:
             tempStudentNode = tempStudentNode->next;
         }
     }
+
 };
 
 class BinaryTreeCourseDatabase // Binary Tree for Course Database
@@ -147,6 +180,20 @@ public:
     BinaryTreeCourseNode *root;
     BinaryTreeCourseDatabase() : root(NULL) {}
 
+
+    /**
+     * @brief Adds a new course to the binary tree of course records.
+     *
+     * This function traverses the binary tree to find the appropriate position for the new course based on its ID.
+     * If the tree is empty, the new course becomes the root of the tree.
+     * If the new course's ID is less than the current node's ID, the function traverses to the left child.
+     * If the new course's ID is greater than the current node's ID, the function traverses to the right child.
+     * If the new course's ID is equal to the current node's ID, it means the course already exists, and a message is printed.
+     *
+     * @param courseToBeAdded A pointer to the course object to be added to the binary tree.
+     *
+     * @return void
+     */
     void addCourse(Course *courseToBeAdded)
     {
         if (!root)
@@ -183,6 +230,18 @@ public:
         }
     }
 
+
+    /**
+     * @brief Removes a course from the binary tree of course records based on the given ID.
+     *
+     * This function traverses the binary tree to find the course node with the matching ID.
+     * If a matching course node is found, it is removed from the binary tree and the memory is deallocated.
+     * If no matching course node is found, a message is printed indicating that the course was not found.
+     *
+     * @param courseID The unique identifier of the course to be removed.
+     *
+     * @return void
+     */
     void dropCourse(long long courseID)
     {
         if (!root)
@@ -208,7 +267,7 @@ public:
             }
             else
             {
-                if (!node->left && !node->right) // No children
+                if (!node->left && !node->right) // If the Node has no children.
                 {
                     if (parent == NULL)
                     {
@@ -224,7 +283,7 @@ public:
                     }
                     delete node;
                 }
-                else if (!node->left || !node->right) // One child
+                else if (!node->left || !node->right) // If the node has one child.
                 {
                     BinaryTreeCourseNode *child = node->left ? node->left : node->right;
                     if (parent == NULL)
@@ -241,7 +300,7 @@ public:
                     }
                     delete node;
                 }
-                else // Two children
+                else // If the node has two children.
                 {
                     BinaryTreeCourseNode *successor = node->right;
                     while (successor && successor->left)
@@ -271,13 +330,26 @@ public:
         }
         cout << "Course not found." << endl;
     }
+
 };
 
 class DoublyEnrollmentHistory // Doubly Linked List for Course Enrollment History for Students
 {
 public:
-    DoublyEnrollmentNode *head = NULL;
+    DoublyEnrollmentNode *head;
+    DoublyEnrollmentHistory() : head(NULL) {}
 
+
+    /**
+     * @brief Adds a new course enrollment record to the doubly linked list of course enrollment history.
+     *
+     * This function creates a new course enrollment node with the given course object and adds it to the end of the linked list.
+     * If the linked list is empty, the new node becomes the head of the list.
+     *
+     * @param enrolledcourse A pointer to the course object representing the course that the student is enrolling in.
+     *
+     * @return void
+     */
     void addEnrollmentRecord(Course *enrolledcourse)
     {
         DoublyEnrollmentNode *newCourseNode = new DoublyEnrollmentNode(enrolledcourse);
@@ -299,6 +371,15 @@ public:
         newCourseNode->prev = tempCourseNode;
     }
 
+
+    /**
+     * @brief Displays the details of all courses in the student's enrollment history.
+     *
+     * This function iterates through the doubly linked list of course enrollment history and prints the details of each course.
+     * The details include the course's ID, name, credits, and instructor.
+     *
+     * @return void
+     */
     void displayEnrollmentHistory()
     {
         DoublyEnrollmentNode *tempCourseNode = head;
@@ -312,6 +393,7 @@ public:
             tempCourseNode = tempCourseNode->next;
         }
     }
+
 };
 
 int main()
