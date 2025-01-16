@@ -34,10 +34,10 @@ class Student // Student Class
     // TODO: Add the course enrollment history here and add the implementation to add a course every time the student takes a new course
 public:
     long long ID, phoneNumber;
-    string name, studentEmail, studentAddress, studentPassword;
+    string FirstName, MiddleName, LastName, studentEmail, studentAddress, studentPassword;
     DoublyEnrollmentHistory *enrollmentHistory;
 
-    Student(long long uni_ID, string uni_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), name(uni_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(nullptr) {}
+    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name,string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), FirstName(uni_first_name), MiddleName(uni_middle_name), LastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(nullptr) {}
 };
 
 class Course // Course Class
@@ -163,7 +163,9 @@ public:
         while (tempStudentNode)
         {
             cout << "Student ID: " << tempStudentNode->student->ID << endl;
-            cout << "Student Name: " << tempStudentNode->student->name << endl;
+            cout << "Student First Name: " << tempStudentNode->student-> FirstName<< endl;
+            cout << "Student Middle Name: " << tempStudentNode->student->MiddleName << endl;
+            cout << "Student Last Name: " << tempStudentNode->student->LastName << endl;
             cout << "Student Email: " << tempStudentNode->student->studentEmail << endl;
             cout << "Student Phone Number: " << tempStudentNode->student->phoneNumber << endl;
             cout << "Student Address: " << tempStudentNode->student->studentAddress << endl;
@@ -405,10 +407,10 @@ int main()
     DoublyEnrollmentHistory enrollmentHistory;
 
     // Singly student list implementation.
-    Student* student1 = new Student(231000491, "Omar", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
-    Student* student2 = new Student(231000010, "Zeyad", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
-    Student* student3 = new Student(231000119, "Mohamed", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
-    Student* student4 = new Student(231000137, "Mazen", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
+    Student* student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
+    Student* student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
+    Student* student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
+    Student* student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah","M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
 
     studentDB.addStudentRecord(student1);
     studentDB.addStudentRecord(student2);
