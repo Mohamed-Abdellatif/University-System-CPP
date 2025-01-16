@@ -44,11 +44,11 @@ class Course // Course Class
 {
 public:
     long long courseID;
+    double courseCredits;
     string courseName;
-    long long courseCredits;
     string courseInstructor;
 
-    Course(long long uni_course_ID, string uni_course_name, long long uni_course_credits, string uni_course_instructor) : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor) {}
+    Course(long long uni_course_ID, string uni_course_name, double uni_course_credits, string uni_course_instructor) : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor) {}
 };
 
 class SinglyStudentNode // Node for Singly Linked List of Student Records
@@ -346,13 +346,13 @@ public:
      * This function creates a new course enrollment node with the given course object and adds it to the end of the linked list.
      * If the linked list is empty, the new node becomes the head of the list.
      *
-     * @param enrolledcourse A pointer to the course object representing the course that the student is enrolling in.
+     * @param enrolledCourse A pointer to the course object representing the course that the student is enrolling in.
      *
      * @return void
      */
-    void addEnrollmentRecord(Course *enrolledcourse)
+    void addEnrollmentRecord(Course *enrolledCourse)
     {
-        DoublyEnrollmentNode *newCourseNode = new DoublyEnrollmentNode(enrolledcourse);
+        DoublyEnrollmentNode *newCourseNode = new DoublyEnrollmentNode(enrolledCourse);
 
         if (!head)
         {
@@ -382,6 +382,8 @@ public:
      */
     void displayEnrollmentHistory()
     {
+        // FIXME: This function should display the enrollment history of ONE SELECT student.
+        // It currently displays EVERY course added to the doubly linked list, or implementation in main is wrong.
         DoublyEnrollmentNode *tempCourseNode = head;
         while (tempCourseNode)
         {
@@ -399,6 +401,33 @@ public:
 int main()
 {
     //TODO: add your implementation here to check if the code is working and for the rest to see your progress
+    SinglyStudentDatabase studentDB;
+    DoublyEnrollmentHistory enrollmentHistory;
+
+    // Singly student list implementation.
+    Student* student1 = new Student(231000491, "Omar", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
+    Student* student2 = new Student(231000010, "Zeyad", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
+    Student* student3 = new Student(231000119, "Mohamed", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
+    Student* student4 = new Student(231000137, "Mazen", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
+
+    studentDB.addStudentRecord(student1);
+    studentDB.addStudentRecord(student2);
+    studentDB.addStudentRecord(student3);
+    studentDB.addStudentRecord(student4);
+    studentDB.displayStudentDetails();
+    studentDB.removeStudentByID(231000137);
+    studentDB.displayStudentDetails();
+
+    // Doubly enrollment list implementation.
+    Course* course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl");
+    Course* course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl");
+    Course* course3 = new Course(301, "Differential Equations", 3.0, "Tamer Abu Elfadl");
+
+    enrollmentHistory.addEnrollmentRecord(course1);
+    enrollmentHistory.addEnrollmentRecord(course2);
+    enrollmentHistory.addEnrollmentRecord(course3);
+    enrollmentHistory.displayEnrollmentHistory();
+
     cout << "Code working..." << endl;
     return 0;
 }
