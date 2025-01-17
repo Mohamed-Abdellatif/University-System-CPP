@@ -73,6 +73,7 @@ public:
 
 class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
 {
+public:
     Course *course;
     PrerequisiteCourseStackNode *next;
 
