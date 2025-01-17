@@ -31,13 +31,12 @@ class DoublyEnrollmentHistory;
 
 class Student // Student Class
 {
-    // TODO: Add the course enrollment history here and add the implementation to add a course every time the student takes a new course
 public:
     long long ID, phoneNumber;
     string FirstName, MiddleName, LastName, studentEmail, studentAddress, studentPassword;
     DoublyEnrollmentHistory *enrollmentHistory;
 
-    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name,string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password) : ID(uni_ID), FirstName(uni_first_name), MiddleName(uni_middle_name), LastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(nullptr) {}
+    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password, DoublyEnrollmentHistory *studentEnrollmentHistory) : ID(uni_ID), FirstName(uni_first_name), MiddleName(uni_middle_name), LastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(studentEnrollmentHistory) {}
 };
 
 class Course // Course Class
@@ -80,12 +79,72 @@ public:
     DoublyEnrollmentNode(Course *c) : course(c), next(NULL), prev(NULL) {}
 };
 
+class DoublyEnrollmentHistory // Doubly Linked List for Course Enrollment History for Students
+{
+public:
+    DoublyEnrollmentNode *head;
+    DoublyEnrollmentHistory() : head(NULL) {}
+
+    /**
+     * @brief Adds a new course enrollment record to the doubly linked list of course enrollment history.
+     *
+     * This function creates a new course enrollment node with the given course object and adds it to the end of the linked list.
+     * If the linked list is empty, the new node becomes the head of the list.
+     *
+     * @param enrolledCourse A pointer to the course object representing the course that the student is enrolling in.
+     *
+     * @return void
+     */
+    void addEnrollmentRecord(Course *enrolledCourse)
+    {
+        DoublyEnrollmentNode *newCourseNode = new DoublyEnrollmentNode(enrolledCourse);
+
+        if (!head)
+        {
+            head = newCourseNode;
+            return;
+        }
+
+        DoublyEnrollmentNode *tempCourseNode = head;
+
+        while (tempCourseNode->next)
+        {
+            tempCourseNode = tempCourseNode->next;
+        }
+
+        tempCourseNode->next = newCourseNode;
+        newCourseNode->prev = tempCourseNode;
+    }
+
+    /**
+     * @brief Displays the details of all courses in the student's enrollment history.
+     *
+     * This function iterates through the doubly linked list of course enrollment history and prints the details of each course.
+     * The details include the course's ID, name, credits, and instructor.
+     *
+     * @return void
+     */
+    void displayEnrollmentHistory()
+    {
+        //TODO: display that there are no courses in the history if there are none
+        DoublyEnrollmentNode *tempCourseNode = head;
+        while (tempCourseNode)
+        {
+            cout << "          Course ID: " << tempCourseNode->course->courseID << endl;
+            cout << "          Course Name: " << tempCourseNode->course->courseName << endl;
+            cout << "          Course Credits: " << tempCourseNode->course->courseCredits << endl;
+            cout << "          Course Instructor: " << tempCourseNode->course->courseInstructor << endl;
+            cout << "          -------------------------------------------" << endl;
+            tempCourseNode = tempCourseNode->next;
+        }
+    }
+};
+
 class SinglyStudentDatabase // Singly Linked List for Student Records
 {
 public:
     SinglyStudentNode *head;
     SinglyStudentDatabase() : head(NULL) {}
-
 
     /**
      * @brief Adds a new student record to the singly linked list of student records.
@@ -114,7 +173,6 @@ public:
             tempStudentNode->next = newStudentNode;
         }
     }
-
 
     /**
      * @brief Removes a student record from the singly linked list of student records based on the given ID.
@@ -147,7 +205,6 @@ public:
             tempStudentNode = tempStudentNode->next;
         }
     }
-    
 
     /**
      * @brief Displays the details of all students in the student records database.
@@ -159,21 +216,23 @@ public:
      */
     void displayStudentDetails()
     {
+        //TODO: display that there are no students in the database if there are none
         SinglyStudentNode *tempStudentNode = head;
         while (tempStudentNode)
         {
             cout << "Student ID: " << tempStudentNode->student->ID << endl;
-            cout << "Student First Name: " << tempStudentNode->student-> FirstName<< endl;
+            cout << "Student First Name: " << tempStudentNode->student->FirstName << endl;
             cout << "Student Middle Name: " << tempStudentNode->student->MiddleName << endl;
             cout << "Student Last Name: " << tempStudentNode->student->LastName << endl;
             cout << "Student Email: " << tempStudentNode->student->studentEmail << endl;
             cout << "Student Phone Number: " << tempStudentNode->student->phoneNumber << endl;
             cout << "Student Address: " << tempStudentNode->student->studentAddress << endl;
+            cout << "Student Enrollment History:" << endl;
+            tempStudentNode->student->enrollmentHistory->displayEnrollmentHistory();
             cout << "---------------------------------------------------------" << endl;
             tempStudentNode = tempStudentNode->next;
         }
     }
-
 };
 
 class BinaryTreeCourseDatabase // Binary Tree for Course Database
@@ -181,7 +240,6 @@ class BinaryTreeCourseDatabase // Binary Tree for Course Database
 public:
     BinaryTreeCourseNode *root;
     BinaryTreeCourseDatabase() : root(NULL) {}
-
 
     /**
      * @brief Adds a new course to the binary tree of course records.
@@ -231,7 +289,6 @@ public:
             }
         }
     }
-
 
     /**
      * @brief Removes a course from the binary tree of course records based on the given ID.
@@ -332,103 +389,37 @@ public:
         }
         cout << "Course not found." << endl;
     }
-
-};
-
-class DoublyEnrollmentHistory // Doubly Linked List for Course Enrollment History for Students
-{
-public:
-    DoublyEnrollmentNode *head;
-    DoublyEnrollmentHistory() : head(NULL) {}
-
-
-    /**
-     * @brief Adds a new course enrollment record to the doubly linked list of course enrollment history.
-     *
-     * This function creates a new course enrollment node with the given course object and adds it to the end of the linked list.
-     * If the linked list is empty, the new node becomes the head of the list.
-     *
-     * @param enrolledCourse A pointer to the course object representing the course that the student is enrolling in.
-     *
-     * @return void
-     */
-    void addEnrollmentRecord(Course *enrolledCourse)
-    {
-        DoublyEnrollmentNode *newCourseNode = new DoublyEnrollmentNode(enrolledCourse);
-
-        if (!head)
-        {
-            head = newCourseNode;
-            return;
-        }
-
-        DoublyEnrollmentNode *tempCourseNode = head;
-
-        while (tempCourseNode->next)
-        {
-            tempCourseNode = tempCourseNode->next;
-        }
-
-        tempCourseNode->next = newCourseNode;
-        newCourseNode->prev = tempCourseNode;
-    }
-
-
-    /**
-     * @brief Displays the details of all courses in the student's enrollment history.
-     *
-     * This function iterates through the doubly linked list of course enrollment history and prints the details of each course.
-     * The details include the course's ID, name, credits, and instructor.
-     *
-     * @return void
-     */
-    void displayEnrollmentHistory()
-    {
-        // FIXME: This function should display the enrollment history of ONE SELECT student.
-        // It currently displays EVERY course added to the doubly linked list, or implementation in main is wrong.
-        DoublyEnrollmentNode *tempCourseNode = head;
-        while (tempCourseNode)
-        {
-            cout << "Course ID: " << tempCourseNode->course->courseID << endl;
-            cout << "Course Name: " << tempCourseNode->course->courseName << endl;
-            cout << "Course Credits: " << tempCourseNode->course->courseCredits << endl;
-            cout << "Course Instructor: " << tempCourseNode->course->courseInstructor << endl;
-            cout << "---------------------------------------------------------" << endl;
-            tempCourseNode = tempCourseNode->next;
-        }
-    }
-
 };
 
 int main()
 {
-    //TODO: add your implementation here to check if the code is working and for the rest to see your progress
+    // TODO: add your implementation here to check if the code is working and for the rest to see your progress
     SinglyStudentDatabase studentDB;
-    DoublyEnrollmentHistory enrollmentHistory;
+    DoublyEnrollmentHistory *student1EnrollmentHistory = new DoublyEnrollmentHistory();
+    DoublyEnrollmentHistory *student2EnrollmentHistory = new DoublyEnrollmentHistory();
+    DoublyEnrollmentHistory *student3EnrollmentHistory = new DoublyEnrollmentHistory();
+    DoublyEnrollmentHistory *student4EnrollmentHistory = new DoublyEnrollmentHistory();
 
     // Singly student list implementation.
-    Student* student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
-    Student* student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
-    Student* student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
-    Student* student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah","M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
+    Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123", student1EnrollmentHistory);
+    Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234", student2EnrollmentHistory);
+    Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345", student3EnrollmentHistory);
+    Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456", student4EnrollmentHistory);
+
+    // Doubly enrollment list implementation.
+    Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl");
+    Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl");
+    Course *course3 = new Course(301, "Differential Equations", 3.0, "Tamer Abu Elfadl");
+
+    student1->enrollmentHistory->addEnrollmentRecord(course1);
+    student2->enrollmentHistory->addEnrollmentRecord(course2);
+    student3->enrollmentHistory->addEnrollmentRecord(course3);
 
     studentDB.addStudentRecord(student1);
     studentDB.addStudentRecord(student2);
     studentDB.addStudentRecord(student3);
     studentDB.addStudentRecord(student4);
     studentDB.displayStudentDetails();
-    studentDB.removeStudentByID(231000137);
-    studentDB.displayStudentDetails();
-
-    // Doubly enrollment list implementation.
-    Course* course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl");
-    Course* course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl");
-    Course* course3 = new Course(301, "Differential Equations", 3.0, "Tamer Abu Elfadl");
-
-    enrollmentHistory.addEnrollmentRecord(course1);
-    enrollmentHistory.addEnrollmentRecord(course2);
-    enrollmentHistory.addEnrollmentRecord(course3);
-    enrollmentHistory.displayEnrollmentHistory();
 
     cout << "Code working..." << endl;
     return 0;
