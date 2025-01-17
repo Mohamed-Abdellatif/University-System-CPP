@@ -436,6 +436,7 @@ public:
 class PrerequisiteCourseStack // Stack that contains the Prerequisite Courses for a Student to register for a certain Course.
 {
 public:
+    int size = 0;
     PrerequisiteCourseStackNode *top;
     PrerequisiteCourseStack() : top(NULL) {}
 
@@ -461,6 +462,7 @@ public:
 
         newCourseNode->next = top;
         top = newCourseNode;
+        size++;
     }
 
     // TODO: Change the return type from void to PrerequisiteCourseStackNode, and find a way to save the node and return it before deletion.
@@ -477,8 +479,7 @@ public:
         courseNodeToPop = top;
         top = top->next;
         delete courseNodeToPop;
-
-        // return top;
+        size--;
     }
 
     void displayCoursePrerequisites()
@@ -486,49 +487,44 @@ public:
         PrerequisiteCourseStackNode *tempCourseNode = top;
         while (tempCourseNode)
         {
-            cout << tempCourseNode->course->courseName;
+            cout << tempCourseNode->course->courseName << endl;
             tempCourseNode = tempCourseNode->next;
         }
     }
 
     bool validateCoursePrerequisites(long long studentID, SinglyStudentDatabase *students)
     {
-        stack<PrerequisiteCourseStackNode*> prereqCoursesToBeTaken;
+        stack<PrerequisiteCourseStackNode *> prereqCoursesToBeTaken;
         Student *student = students->searchStudentByID(studentID);
         PrerequisiteCourseStackNode *tempCourseNode = top;
 
-        while (tempCourseNode && student)
+        while (tempCourseNode && student && size != 0)
         {
-            if (student->enrollmentHistory->checkCourseExistence(tempCourseNode->course))
-            {
-                // popFromStack();
-                cout << "In If Condition";
-            }
-            else
+            popFromStack();
+            if (student->enrollmentHistory->checkCourseExistence(tempCourseNode->course) == false)
             {
                 prereqCoursesToBeTaken.push(tempCourseNode);
-                // popFromStack();
-                cout << "In Else";
             }
             tempCourseNode = tempCourseNode->next;
-        }
+        };
 
         while (!prereqCoursesToBeTaken.empty())
         {
             addToStack(prereqCoursesToBeTaken.top()->course);
             prereqCoursesToBeTaken.pop();
-        }
-        if (!top)
+        };
+        if (size == 0)
         {
             return true;
         }
         else
         {
+            cout << "---------------------------------------" << endl;
             cout << "Prerequisite Courses Missing:" << endl;
             displayCoursePrerequisites();
 
             return false;
-        }
+        };
     }
 };
 
@@ -563,13 +559,6 @@ int main()
     prereqCourse1Stack->addToStack(course1);
     student1->enrollmentHistory->addEnrollmentRecord(course1);
     student2->enrollmentHistory->addEnrollmentRecord(course2);
-
-    // Doubly enrollment list implementation.
-    if (course1->prereqStack->validateCoursePrerequisites(231000010, studentDBPtr))
-    {
-        cout << "Out of Order";
-    }
-    // Course *course3 = new Course(301, "Differential Equations", 3.0, "Tamer Abu Elfadl", prereqStack);
 
     cout << "Code working..." << endl;
     return 0;
