@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include <stack>
 
 //---------------------------------------ZEYAD Part----------------------------------
 // 1. Student Records Management: Use a Single Linked List (SLL) to store and manage
@@ -28,6 +29,7 @@ using namespace std;
 
 // Function declarations (if any) can go here.
 class DoublyEnrollmentHistory;
+class PrerequisiteCourseStack;
 
 class Student // Student Class that stores Student information.
 {
@@ -37,7 +39,7 @@ public:
     DoublyEnrollmentHistory *enrollmentHistory;
 
     Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password, DoublyEnrollmentHistory *studentEnrollmentHistory)
-     : ID(uni_ID), firstName(uni_first_name), middleName(uni_middle_name), lastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(studentEnrollmentHistory) {}
+        : ID(uni_ID), firstName(uni_first_name), middleName(uni_middle_name), lastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(studentEnrollmentHistory) {}
 };
 
 class Course // Course Class that stores Course information.
@@ -47,9 +49,10 @@ public:
     double courseCredits;
     string courseName;
     string courseInstructor;
+    PrerequisiteCourseStack *prereqStack;
 
-    Course(long long uni_course_ID, string uni_course_name, double uni_course_credits, string uni_course_instructor)
-     : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor) {}
+    Course(long long uni_course_ID, string uni_course_name, double uni_course_credits, string uni_course_instructor, PrerequisiteCourseStack *coursePrereqStack)
+        : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor), prereqStack(coursePrereqStack) {}
 };
 
 class SinglyStudentNode // Node for Singly Linked List of Student Records.
@@ -137,7 +140,7 @@ public:
      */
     void displayEnrollmentHistory()
     {
-        //TODO: display that there are no courses in the history if there are none
+        // TODO: display that there are no courses in the history if there are none
         DoublyEnrollmentNode *tempCourseNode = head;
         while (tempCourseNode)
         {
@@ -148,6 +151,20 @@ public:
             cout << "          -------------------------------------------" << endl;
             tempCourseNode = tempCourseNode->next;
         }
+    }
+
+    bool checkCourseExistence(Course *courseToBeSearched)
+    {
+        DoublyEnrollmentNode *tempCourseNode = head;
+        while (tempCourseNode)
+        {
+            if (courseToBeSearched == tempCourseNode->course)
+            {
+                return true;
+            }
+            tempCourseNode = tempCourseNode->next;
+        }
+        return false;
     }
 };
 
@@ -227,7 +244,7 @@ public:
      */
     void displayStudentDetails()
     {
-        //TODO: display that there are no students in the database if there are none
+        // TODO: display that there are no students in the database if there are none
         SinglyStudentNode *tempStudentNode = head;
         while (tempStudentNode)
         {
@@ -243,6 +260,20 @@ public:
             cout << "---------------------------------------------------------" << endl;
             tempStudentNode = tempStudentNode->next;
         }
+    }
+
+    Student *searchStudentByID(long long ID)
+    {
+        SinglyStudentNode *tempStudentNode = head;
+        while (tempStudentNode)
+        {
+            if (tempStudentNode->student->ID == ID)
+            {
+                return tempStudentNode->student;
+            }
+            tempStudentNode = tempStudentNode->next;
+        }
+        return NULL;
     }
 };
 
@@ -441,20 +472,63 @@ public:
             return;
         }
 
-        PrerequisiteCourseStackNode *courseNodeToPop = new PrerequisiteCourseStackNode();
+        PrerequisiteCourseStackNode *courseNodeToPop;
 
         courseNodeToPop = top;
         top = top->next;
         delete courseNodeToPop;
-        
+
         // return top;
     }
 
-
-    PrerequisiteCourseStack* validateCoursePrerequisites(long long courseID, long long studentID)
+    void displayCoursePrerequisites()
     {
-        // TODO: Make the algorithm for this, such that it saves the student ID and course ID in a temp node,
-        // and if the Course Enrollment History of the Student has a Course ID that matches a future Course's ID, then it is popped from the stack.
+        PrerequisiteCourseStackNode *tempCourseNode = top;
+        while (tempCourseNode)
+        {
+            cout << tempCourseNode->course->courseName;
+            tempCourseNode = tempCourseNode->next;
+        }
+    }
+
+    bool validateCoursePrerequisites(long long studentID, SinglyStudentDatabase *students)
+    {
+        stack<PrerequisiteCourseStackNode*> prereqCoursesToBeTaken;
+        Student *student = students->searchStudentByID(studentID);
+        PrerequisiteCourseStackNode *tempCourseNode = top;
+
+        while (tempCourseNode && student)
+        {
+            if (student->enrollmentHistory->checkCourseExistence(tempCourseNode->course))
+            {
+                // popFromStack();
+                cout << "In If Condition";
+            }
+            else
+            {
+                prereqCoursesToBeTaken.push(tempCourseNode);
+                // popFromStack();
+                cout << "In Else";
+            }
+            tempCourseNode = tempCourseNode->next;
+        }
+
+        while (!prereqCoursesToBeTaken.empty())
+        {
+            addToStack(prereqCoursesToBeTaken.top()->course);
+            prereqCoursesToBeTaken.pop();
+        }
+        if (!top)
+        {
+            return true;
+        }
+        else
+        {
+            cout << "Prerequisite Courses Missing:" << endl;
+            displayCoursePrerequisites();
+
+            return false;
+        }
     }
 };
 
@@ -462,6 +536,8 @@ int main()
 {
     // TODO: add your implementation here to check if the code is working and for the rest to see your progress
     SinglyStudentDatabase studentDB;
+    SinglyStudentDatabase *studentDBPtr = &studentDB;
+    PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
     DoublyEnrollmentHistory *student1EnrollmentHistory = new DoublyEnrollmentHistory();
     DoublyEnrollmentHistory *student2EnrollmentHistory = new DoublyEnrollmentHistory();
     DoublyEnrollmentHistory *student3EnrollmentHistory = new DoublyEnrollmentHistory();
@@ -473,20 +549,27 @@ int main()
     Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345", student3EnrollmentHistory);
     Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456", student4EnrollmentHistory);
 
-    // Doubly enrollment list implementation.
-    Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl");
-    Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl");
-    Course *course3 = new Course(301, "Differential Equations", 3.0, "Tamer Abu Elfadl");
-
-    student1->enrollmentHistory->addEnrollmentRecord(course1);
-    student2->enrollmentHistory->addEnrollmentRecord(course2);
-    student3->enrollmentHistory->addEnrollmentRecord(course3);
+    // student3->enrollmentHistory->addEnrollmentRecord(course3);
 
     studentDB.addStudentRecord(student1);
     studentDB.addStudentRecord(student2);
     studentDB.addStudentRecord(student3);
     studentDB.addStudentRecord(student4);
-    studentDB.displayStudentDetails();
+    // studentDB.displayStudentDetails();
+
+    // Stack implemenetation.
+    Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
+    Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", NULL);
+    prereqCourse1Stack->addToStack(course1);
+    student1->enrollmentHistory->addEnrollmentRecord(course1);
+    student2->enrollmentHistory->addEnrollmentRecord(course2);
+
+    // Doubly enrollment list implementation.
+    if (course1->prereqStack->validateCoursePrerequisites(231000010, studentDBPtr))
+    {
+        cout << "Out of Order";
+    }
+    // Course *course3 = new Course(301, "Differential Equations", 3.0, "Tamer Abu Elfadl", prereqStack);
 
     cout << "Code working..." << endl;
     return 0;
