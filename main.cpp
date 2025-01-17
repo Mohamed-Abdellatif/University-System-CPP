@@ -11,7 +11,7 @@
 //---------------------------------------Omar Part----------------------------------
 // 3. Course Enrollment History: Employ a Double Linked List (DLL) to track each
 // student's course history.
-// 4. Course Prerequisites: Use a Stack to valIDate prerequisites for course registration.
+// 4. Course Prerequisites: Use a Stack to validate prerequisites for course registration.
 //
 //---------------------------------------Mazen Part---------------------------------
 // 5. Course Waitlists: Manage waitlists with a Queue.
@@ -29,17 +29,18 @@ using namespace std;
 // Function declarations (if any) can go here.
 class DoublyEnrollmentHistory;
 
-class Student // Student Class
+class Student // Student Class that stores Student information.
 {
 public:
     long long ID, phoneNumber;
-    string FirstName, MiddleName, LastName, studentEmail, studentAddress, studentPassword;
+    string firstName, middleName, lastName, studentEmail, studentAddress, studentPassword;
     DoublyEnrollmentHistory *enrollmentHistory;
 
-    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password, DoublyEnrollmentHistory *studentEnrollmentHistory) : ID(uni_ID), FirstName(uni_first_name), MiddleName(uni_middle_name), LastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(studentEnrollmentHistory) {}
+    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password, DoublyEnrollmentHistory *studentEnrollmentHistory)
+     : ID(uni_ID), firstName(uni_first_name), middleName(uni_middle_name), lastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(studentEnrollmentHistory) {}
 };
 
-class Course // Course Class
+class Course // Course Class that stores Course information.
 {
 public:
     long long courseID;
@@ -47,10 +48,11 @@ public:
     string courseName;
     string courseInstructor;
 
-    Course(long long uni_course_ID, string uni_course_name, double uni_course_credits, string uni_course_instructor) : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor) {}
+    Course(long long uni_course_ID, string uni_course_name, double uni_course_credits, string uni_course_instructor)
+     : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor) {}
 };
 
-class SinglyStudentNode // Node for Singly Linked List of Student Records
+class SinglyStudentNode // Node for Singly Linked List of Student Records.
 {
 public:
     Student *student;
@@ -59,7 +61,7 @@ public:
     SinglyStudentNode(Student *s) : student(s), next(NULL) {}
 };
 
-class BinaryTreeCourseNode // Node for Binary Tree of Course Records
+class BinaryTreeCourseNode // Node for Binary Tree of Course Records.
 {
 public:
     Course *course;
@@ -69,7 +71,15 @@ public:
     BinaryTreeCourseNode(Course *c) : course(c), left(NULL), right(NULL) {}
 };
 
-class DoublyEnrollmentNode // Node for Doubly Linked List of Course Enrollment History
+class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
+{
+    Course *course;
+    PrerequisiteCourseStackNode *next;
+
+    PrerequisiteCourseStackNode(Course *c) : course(c), next(NULL) {}
+};
+
+class DoublyEnrollmentNode // Node for Doubly Linked List of Course Enrollment History.
 {
 public:
     Course *course;
@@ -79,7 +89,7 @@ public:
     DoublyEnrollmentNode(Course *c) : course(c), next(NULL), prev(NULL) {}
 };
 
-class DoublyEnrollmentHistory // Doubly Linked List for Course Enrollment History for Students
+class DoublyEnrollmentHistory // Doubly Linked List for Course Enrollment History for Students.
 {
 public:
     DoublyEnrollmentNode *head;
@@ -140,7 +150,7 @@ public:
     }
 };
 
-class SinglyStudentDatabase // Singly Linked List for Student Records
+class SinglyStudentDatabase // Singly Linked List for Student Records.
 {
 public:
     SinglyStudentNode *head;
@@ -221,9 +231,9 @@ public:
         while (tempStudentNode)
         {
             cout << "Student ID: " << tempStudentNode->student->ID << endl;
-            cout << "Student First Name: " << tempStudentNode->student->FirstName << endl;
-            cout << "Student Middle Name: " << tempStudentNode->student->MiddleName << endl;
-            cout << "Student Last Name: " << tempStudentNode->student->LastName << endl;
+            cout << "Student First Name: " << tempStudentNode->student->firstName << endl;
+            cout << "Student Middle Name: " << tempStudentNode->student->middleName << endl;
+            cout << "Student Last Name: " << tempStudentNode->student->lastName << endl;
             cout << "Student Email: " << tempStudentNode->student->studentEmail << endl;
             cout << "Student Phone Number: " << tempStudentNode->student->phoneNumber << endl;
             cout << "Student Address: " << tempStudentNode->student->studentAddress << endl;
@@ -235,7 +245,7 @@ public:
     }
 };
 
-class BinaryTreeCourseDatabase // Binary Tree for Course Database
+class BinaryTreeCourseDatabase // Binary Tree for Course Database.
 {
 public:
     BinaryTreeCourseNode *root;
@@ -388,6 +398,62 @@ public:
             }
         }
         cout << "Course not found." << endl;
+    }
+};
+
+class PrerequisiteCourseStack // Stack that contains the Prerequisite Courses for a Student to register for a certain Course.
+{
+public:
+    PrerequisiteCourseStackNode *top;
+    PrerequisiteCourseStack() : top(NULL) {}
+
+    /**
+     * @brief Adds a new course to the prerequisite course stack.
+     *
+     * This function creates a new prerequisite course node with the given course object and adds it to the top of the stack.
+     * If the stack is empty, the new node becomes the top of the stack.
+     *
+     * @param prereqCourseToAdd A pointer to the course object representing the prerequisite course to be added to the stack.
+     *
+     * @return void
+     */
+    void addToStack(Course *prereqCourseToAdd)
+    {
+        PrerequisiteCourseStackNode *newCourseNode = new PrerequisiteCourseStackNode(prereqCourseToAdd);
+
+        if (!top)
+        {
+            top = newCourseNode;
+            return;
+        }
+
+        newCourseNode->next = top;
+        top = newCourseNode;
+    }
+
+    // TODO: Change the return type from void to PrerequisiteCourseStackNode, and find a way to save the node and return it before deletion.
+    void popFromStack()
+    {
+        if (!top)
+        {
+            cout << "No Prerequisite Courses Found!" << endl;
+            return;
+        }
+
+        PrerequisiteCourseStackNode *courseNodeToPop = new PrerequisiteCourseStackNode();
+
+        courseNodeToPop = top;
+        top = top->next;
+        delete courseNodeToPop;
+        
+        // return top;
+    }
+
+
+    PrerequisiteCourseStack* validateCoursePrerequisites(long long courseID, long long studentID)
+    {
+        // TODO: Make the algorithm for this, such that it saves the student ID and course ID in a temp node,
+        // and if the Course Enrollment History of the Student has a Course ID that matches a future Course's ID, then it is popped from the stack.
     }
 };
 
