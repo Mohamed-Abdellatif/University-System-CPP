@@ -153,6 +153,17 @@ public:
         }
     }
 
+    /**
+     * @brief Checks if a given course exists in the student's enrollment history.
+     *
+     * This function iterates through the doubly linked list of courses in the student's enrollment history.
+     * If a matching course node is found, the function returns true.
+     * If no matching course node is found, the function returns false.
+     *
+     * @param courseToBeSearched A pointer to the course object to be searched for in the student's enrollment history.
+     *
+     * @return bool Returns true if the course is found in the student's enrollment history, false otherwise.
+     */
     bool checkCourseExistence(Course *courseToBeSearched)
     {
         DoublyEnrollmentNode *tempCourseNode = head;
@@ -262,6 +273,17 @@ public:
         }
     }
 
+    /**
+     * @brief Searches for a student in the student records database based on the given ID.
+     *
+     * This function iterates through the singly linked list of student records to find a student node with the matching ID.
+     * If a matching student node is found, the function returns a pointer to the student object.
+     * If no matching student node is found, the function returns NULL.
+     *
+     * @param ID The unique identifier of the student to be searched.
+     *
+     * @return Student* Returns a pointer to the student object if found, NULL otherwise.
+     */
     Student *searchStudentByID(long long ID)
     {
         SinglyStudentNode *tempStudentNode = head;
@@ -441,7 +463,7 @@ public:
     PrerequisiteCourseStack() : top(NULL) {}
 
     /**
-     * @brief Adds a new course to the prerequisite course stack.
+     * @brief Adds a new course prerequisite to the stack.
      *
      * This function creates a new prerequisite course node with the given course object and adds it to the top of the stack.
      * If the stack is empty, the new node becomes the top of the stack.
@@ -465,7 +487,15 @@ public:
         size++;
     }
 
-    // TODO: Change the return type from void to PrerequisiteCourseStackNode, and find a way to save the node and return it before deletion.
+    /**
+     * @brief Removes and deallocates the top node from the stack.
+     *
+     * This function checks if the stack is empty. If the stack is not empty, it removes the top node from the stack,
+     * deallocates the memory for the removed node, and updates the top pointer to the next node in the stack.
+     * If the stack is empty, it prints a message indicating that no prerequisite courses were found.
+     *
+     * @return void
+     */
     void popFromStack()
     {
         if (!top)
@@ -482,6 +512,14 @@ public:
         size--;
     }
 
+    /**
+     * @brief Displays the names of all prerequisite courses in the stack.
+     *
+     * This function iterates through the stack of prerequisite courses and prints the name of each course.
+     * If the stack is empty, it prints a message indicating that no prerequisite courses were found.
+     *
+     * @return void
+     */
     void displayCoursePrerequisites()
     {
         PrerequisiteCourseStackNode *tempCourseNode = top;
@@ -492,6 +530,19 @@ public:
         }
     }
 
+    /**
+     * @brief Validates the prerequisite courses for a student to register for a certain course.
+     *
+     * This function iterates through the stack of prerequisite courses for a student and checks if the student has taken each prerequisite course.
+     * If a prerequisite course is not found in the student's enrollment history, the course is added back to the stack.
+     * If all prerequisite courses are found in the student's enrollment history, the function returns true.
+     * If any prerequisite courses are missing, the function displays the missing courses and returns false.
+     *
+     * @param studentID The unique identifier of the student.
+     * @param students A pointer to the student database containing the student records.
+     *
+     * @return bool Returns true if all prerequisite courses are found in the student's enrollment history, false otherwise.
+     */
     bool validateCoursePrerequisites(long long studentID, SinglyStudentDatabase *students)
     {
         stack<PrerequisiteCourseStackNode *> prereqCoursesToBeTaken;
