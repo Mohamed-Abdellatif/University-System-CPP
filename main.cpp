@@ -272,7 +272,7 @@ public:
      *
      * @return Student* Returns a pointer to the student object if found, NULL otherwise.
      */
-    Student *searchStudentByID(long long ID)
+    Student *getStudentByID(long long ID)
     {
         SinglyStudentNode *tempStudentNode = head;
         while (tempStudentNode)
@@ -284,6 +284,167 @@ public:
             tempStudentNode = tempStudentNode->next;
         }
         return NULL;
+    }
+};
+
+class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
+{
+public:
+    Course *course;
+    PrerequisiteCourseStackNode *next;
+
+    PrerequisiteCourseStackNode(Course *c) : course(c), next(NULL) {}
+};
+
+class PrerequisiteCourseStack // Stack that contains the Prerequisite Courses for a Student to register for a certain Course.
+{
+public:
+    int size = 0;
+    PrerequisiteCourseStackNode *top;
+    PrerequisiteCourseStack() : top(nullptr) {}
+
+    /**
+     * @brief Adds a new course prerequisite to the stack.
+     *
+     * This function creates a new prerequisite course node with the given course object and adds it to the top of the stack.
+     * If the stack is empty, the new node becomes the top of the stack.
+     *
+     * @param prereqCourseToAdd A pointer to the course object representing the prerequisite course to be added to the stack.
+     *
+     * @return void
+     */
+    void addToStack(Course *prereqCourseToAdd)
+    {
+        PrerequisiteCourseStackNode *newCourseNode = new PrerequisiteCourseStackNode(prereqCourseToAdd);
+
+        if (!top)
+        {
+            top = newCourseNode;
+            size++;
+            return;
+        }
+
+        newCourseNode->next = top;
+        top = newCourseNode;
+        size++;
+    }
+
+    /**
+     * @brief Removes and deallocates the top node from the stack.
+     *
+     * This function checks if the stack is empty. If the stack is not empty, it removes the top node from the stack,
+     * deallocates the memory for the removed node, and updates the top pointer to the next node in the stack.
+     * If the stack is empty, it prints a message indicating that no prerequisite courses were found.
+     *
+     * @return void
+     */
+    void popFromStack()
+    {
+        if (size == 0)
+        {
+            return;
+        }
+
+        PrerequisiteCourseStackNode *courseNodeToPop;
+
+        courseNodeToPop = top;
+        top = top->next;
+        delete courseNodeToPop;
+        size--;
+    }
+
+    /**
+     * @brief Displays the names of all prerequisite courses in the stack.
+     *
+     * This function iterates through the stack of prerequisite courses and prints the name of each course.
+     * If the stack is empty, it prints a message indicating that no prerequisite courses were found.
+     *
+     * @return void
+     */
+    void displayCoursePrerequisites()
+
+    {
+        PrerequisiteCourseStackNode *tempCourseNode = top;
+        if (size == 0)
+        {
+            cout << "No Prerequisite Courses" << endl;
+            return;
+        };
+        cout << "Course Prerequisites:" << endl;
+        while (tempCourseNode)
+        {
+
+            cout << "                     " << tempCourseNode->course->courseName << endl;
+            tempCourseNode = tempCourseNode->next;
+        }
+    }
+    bool isPrereqExistByID(long long courseID)
+
+    {
+        PrerequisiteCourseStackNode *tempCourseNode = top;
+        if (size == 0)
+        {
+            return false;
+        };
+
+        while (tempCourseNode)
+        {
+            if (tempCourseNode->course->courseID == courseID)
+            {
+                return true;
+            }
+            tempCourseNode = tempCourseNode->next;
+        }
+        return false;
+    }
+
+    /**
+     * @brief Validates the prerequisite courses for a student to register for a certain course.
+     *
+     * This function iterates through the stack of prerequisite courses for a student and checks if the student has taken each prerequisite course.
+     * If a prerequisite course is not found in the student's enrollment history, the course is added back to the stack.
+     * If all prerequisite courses are found in the student's enrollment history, the function returns true.
+     * If any prerequisite courses are missing, the function displays the missing courses and returns false.
+     *
+     * @param studentID The unique identifier of the student.
+     * @param students A pointer to the student database containing the student records.
+     *
+     * @return bool Returns true if all prerequisite courses are found in the student's enrollment history, false otherwise.
+     */
+
+    bool validateCoursePrerequisites(long long studentID, SinglyStudentDatabase *students)
+    {
+        stack<PrerequisiteCourseStackNode *> prereqCoursesToBeTaken;
+        Student *student = students->getStudentByID(studentID);
+        PrerequisiteCourseStackNode *tempCourseNode = top;
+
+        while (tempCourseNode && student && size != 0)
+        {
+            popFromStack();
+            if (student->enrollmentHistory->checkCourseExistence(tempCourseNode->course) == false)
+            {
+                prereqCoursesToBeTaken.push(tempCourseNode);
+            }
+            tempCourseNode = tempCourseNode->next;
+        };
+
+        while (!prereqCoursesToBeTaken.empty())
+        {
+            addToStack(prereqCoursesToBeTaken.top()->course);
+            prereqCoursesToBeTaken.pop();
+        };
+        if (size == 0)
+        {
+            return true;
+        }
+        else
+        {
+            cout << "---------------------------------------" << endl;
+            cout << "Prerequisite Courses Missing:" << endl;
+            displayCoursePrerequisites();
+
+            return false;
+        };
     }
 };
 
@@ -302,6 +463,7 @@ class BinaryTreeCourseDatabase // Binary Tree for Course Database.
 public:
     BinaryTreeCourseNode *root;
     BinaryTreeCourseDatabase() : root(NULL) {}
+    int size = 0;
 
     /**
      * @brief Adds a new course to the binary tree of course records.
@@ -321,6 +483,7 @@ public:
         if (!root)
         {
             root = new BinaryTreeCourseNode(courseToBeAdded);
+            size++;
             return;
         }
         BinaryTreeCourseNode *tempStudentNode = root;
@@ -331,6 +494,7 @@ public:
                 if (!tempStudentNode->left)
                 {
                     tempStudentNode->left = new BinaryTreeCourseNode(courseToBeAdded);
+                    size++;
                     return;
                 }
                 tempStudentNode = tempStudentNode->left;
@@ -340,13 +504,13 @@ public:
                 if (!tempStudentNode->right)
                 {
                     tempStudentNode->right = new BinaryTreeCourseNode(courseToBeAdded);
+                    size++;
                     return;
                 }
                 tempStudentNode = tempStudentNode->right;
             }
             else
             {
-                cout << "This Course already exists." << endl;
                 return;
             }
         }
@@ -446,6 +610,7 @@ public:
                     }
                     delete node;
                 }
+                size--;
                 return;
             }
         }
@@ -459,150 +624,82 @@ public:
             return;
         }
         displaytree(node->left);
+        cout << "-------------------------------------------" << endl;
+        cout << "University Courses:" << endl;
         cout << "Course ID: " << node->course->courseID << endl;
         cout << "Course Name: " << node->course->courseName << endl;
         cout << "Course Credits: " << node->course->courseCredits << endl;
         cout << "Course Instructor: " << node->course->courseInstructor << endl;
+        node->course->prereqStack->displayCoursePrerequisites();
         cout << "-------------------------------------------" << endl;
         displaytree(node->right);
     }
-};
-
-class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
-{
-public:
-    Course *course;
-    PrerequisiteCourseStackNode *next;
-
-    PrerequisiteCourseStackNode(Course *c) : course(c), next(NULL) {}
-};
-
-class PrerequisiteCourseStack // Stack that contains the Prerequisite Courses for a Student to register for a certain Course.
-{
-public:
-    int size = 0;
-    PrerequisiteCourseStackNode *top;
-    PrerequisiteCourseStack() : top(NULL) {}
-
-    /**
-     * @brief Adds a new course prerequisite to the stack.
-     *
-     * This function creates a new prerequisite course node with the given course object and adds it to the top of the stack.
-     * If the stack is empty, the new node becomes the top of the stack.
-     *
-     * @param prereqCourseToAdd A pointer to the course object representing the prerequisite course to be added to the stack.
-     *
-     * @return void
-     */
-    void addToStack(Course *prereqCourseToAdd)
+    Course *getCourseByName(BinaryTreeCourseNode *node, string courseName)
     {
-        PrerequisiteCourseStackNode *newCourseNode = new PrerequisiteCourseStackNode(prereqCourseToAdd);
 
-        if (!top)
+        if (node == NULL)
         {
-            top = newCourseNode;
-            return;
+            return nullptr;
         }
 
-        newCourseNode->next = top;
-        top = newCourseNode;
-        size++;
-    }
-
-    /**
-     * @brief Removes and deallocates the top node from the stack.
-     *
-     * This function checks if the stack is empty. If the stack is not empty, it removes the top node from the stack,
-     * deallocates the memory for the removed node, and updates the top pointer to the next node in the stack.
-     * If the stack is empty, it prints a message indicating that no prerequisite courses were found.
-     *
-     * @return void
-     */
-    void popFromStack()
-    {
-        if (!top)
+        Course *leftResult = getCourseByName(node->left, courseName);
+        if (leftResult != nullptr)
         {
-            cout << "No Prerequisite Courses Found!" << endl;
-            return;
+            return leftResult;
         }
 
-        PrerequisiteCourseStackNode *courseNodeToPop;
-
-        courseNodeToPop = top;
-        top = top->next;
-        delete courseNodeToPop;
-        size--;
-    }
-
-    /**
-     * @brief Displays the names of all prerequisite courses in the stack.
-     *
-     * This function iterates through the stack of prerequisite courses and prints the name of each course.
-     * If the stack is empty, it prints a message indicating that no prerequisite courses were found.
-     *
-     * @return void
-     */
-    void displayCoursePrerequisites()
-    {
-        PrerequisiteCourseStackNode *tempCourseNode = top;
-        if (size == 0)
+        // Check the current node
+        if (node->course->courseName == courseName)
         {
-            cout << "No Prerequisite Courses Found!" << endl;
-            return;
-        };
-        while (tempCourseNode)
-        {
-            cout << tempCourseNode->course->courseName << endl;
-            tempCourseNode = tempCourseNode->next;
+            return node->course;
         }
+
+        return getCourseByName(node->right, courseName);
     }
 
-    /**
-     * @brief Validates the prerequisite courses for a student to register for a certain course.
-     *
-     * This function iterates through the stack of prerequisite courses for a student and checks if the student has taken each prerequisite course.
-     * If a prerequisite course is not found in the student's enrollment history, the course is added back to the stack.
-     * If all prerequisite courses are found in the student's enrollment history, the function returns true.
-     * If any prerequisite courses are missing, the function displays the missing courses and returns false.
-     *
-     * @param studentID The unique identifier of the student.
-     * @param students A pointer to the student database containing the student records.
-     *
-     * @return bool Returns true if all prerequisite courses are found in the student's enrollment history, false otherwise.
-     */
-    bool validateCoursePrerequisites(long long studentID, SinglyStudentDatabase *students)
+    Course *getCourseByID(BinaryTreeCourseNode *node, long long courseID)
     {
-        stack<PrerequisiteCourseStackNode *> prereqCoursesToBeTaken;
-        Student *student = students->searchStudentByID(studentID);
-        PrerequisiteCourseStackNode *tempCourseNode = top;
 
-        while (tempCourseNode && student && size != 0)
+        if (node == NULL)
         {
-            popFromStack();
-            if (student->enrollmentHistory->checkCourseExistence(tempCourseNode->course) == false)
-            {
-                prereqCoursesToBeTaken.push(tempCourseNode);
-            }
-            tempCourseNode = tempCourseNode->next;
-        };
+            return nullptr;
+        }
 
-        while (!prereqCoursesToBeTaken.empty())
+        Course *leftResult = getCourseByID(node->left, courseID);
+        if (leftResult != nullptr)
         {
-            addToStack(prereqCoursesToBeTaken.top()->course);
-            prereqCoursesToBeTaken.pop();
-        };
-        if (size == 0)
+            return leftResult;
+        }
+
+        // Check the current node
+        if (node->course->courseID == courseID)
+        {
+            return node->course;
+        }
+
+        return getCourseByID(node->right, courseID);
+    }
+    bool isCourseExistById(BinaryTreeCourseNode *node, long long courseID)
+    {
+
+        if (node == NULL)
+        {
+            return false;
+        }
+
+        bool leftResult = isCourseExistById(node->left, courseID);
+        if (leftResult)
+        {
+            return leftResult;
+        }
+
+        // Check the current node
+        if (node->course->courseID == courseID)
         {
             return true;
         }
-        else
-        {
-            cout << "---------------------------------------" << endl;
-            cout << "Prerequisite Courses Missing:" << endl;
-            displayCoursePrerequisites();
 
-            return false;
-        };
+        return isCourseExistById(node->right, courseID);
     }
 };
 
@@ -610,6 +707,8 @@ class UniversityManagementSystem
 {
 public:
     SinglyStudentDatabase studentsDB;
+    BinaryTreeCourseDatabase coursesDB;
+    std::map<std::string, PrerequisiteCourseStack *> variables;
     void addStudentToDatabase()
     {
         long long ID, phoneNumber;
@@ -667,39 +766,152 @@ public:
         cout << "Student Removed Successfully!" << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
+
+    void askForPrerequisiteCourse(PrerequisiteCourseStack *prereqStack)
+    {
+        string courseName;
+        int addAnotherCourseChoice = 0;
+        cin.ignore();
+        cout << "Enter Course Name: ";
+        getline(cin, courseName);
+        Course *course = coursesDB.getCourseByName(coursesDB.root, courseName);
+        if (course != nullptr)
+        {
+            prereqStack->addToStack(course);
+            cout << "Prerequisite Course Added Successfully!" << endl;
+        }
+        else
+        {
+            cout << "Course Not Found!" << endl;
+        };
+        cout << "Does this course have another prerequisite course? (Enter 1 for Yes , 0 for No):";
+        cin >> addAnotherCourseChoice;
+        if (addAnotherCourseChoice == 1)
+        {
+            askForPrerequisiteCourse(prereqStack);
+        };
+    }
+
+    void addCourseToDatabase()
+    {
+        int addPrerequisiteChoice = 0;
+        long long courseID;
+        double courseCredits;
+        string courseName;
+        string courseInstructor;
+        cout << "Enter Course ID: ";
+        cin >> courseID;
+        if (coursesDB.isCourseExistById(coursesDB.root, courseID))
+        {
+            cout << "Course ID already exists! Change the course Id" << endl;
+            addCourseToDatabase();
+            return;
+        };
+        cout << "Enter Course Name: ";
+        cin.ignore();
+        getline(cin, courseName);
+        cout << "Enter Course Credits: ";
+        cin >> courseCredits;
+        cout << "Enter Course Instructor: ";
+        cin.ignore();
+        getline(cin, courseInstructor);
+        variables[courseName] = new PrerequisiteCourseStack();
+        coursesDB.addCourse(new Course(courseID, courseName, courseCredits, courseInstructor, variables[courseName]));
+        cout << "Does this course have any prerequisite courses? (Enter 1 for Yes , 0 for No):";
+        cin >> addPrerequisiteChoice;
+        if (addPrerequisiteChoice == 1)
+        {
+            askForPrerequisiteCourse(variables[courseName]);
+        }
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Course Added Successfully!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    }
+
+    void displayCoursesFromDB()
+    {
+        if (coursesDB.size == 0)
+        {
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "There are no courses in the database" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            return;
+        }
+        coursesDB.displaytree(coursesDB.root);
+    }
+
+    void removeCourseFromDatabase()
+    {
+        if (coursesDB.size == 0)
+        {
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "There are no courses in the database to remove" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            return;
+        }
+        long long courseID;
+        cout << "Enter Course ID to Remove: ";
+        cin >> courseID;
+        coursesDB.dropCourse(courseID);
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Course Removed Successfully!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    }
+
+    // void addEnrollmentRecordToStudent()
+    // {
+    //     long long studentID, courseID;
+
+    //     cout << "Enter the student ID to add an enrollment record:";
+    //     cin >> studentID;
+    //     cout << "Enter the course ID that the student will enroll in:";
+    //     cin >> courseID;
+    //     if (!coursesDB.isCourseExistById(coursesDB.root, courseID))
+    //     {
+    //         cout << "Course does not exist! Change the course Id" << endl;
+    //         addEnrollmentRecordToStudent();
+    //         return;
+    //     };
+    //     Course *course = coursesDB.getCourseByID(coursesDB.root, courseID);
+    //     Student *student = studentsDB.getStudentByID(studentID);
+    //     if (course->prereqStack->validateCoursePrerequisites(student))
+    //     {
+    //         student->enrollmentHistory->addEnrollmentRecord(course);
+    //         cout << "Enrollment record added successfully!" << endl;
+    //         return;
+    //     };
+    // }
 };
 
 int main()
 {
     UniversityManagementSystem NU;
-    std::map<std::string, PrerequisiteCourseStack*> variables;
-    // TODO: add your implementation here to check if the code is working and for the rest to see your progress
-    SinglyStudentDatabase studentsDB;
-    PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
-    BinaryTreeCourseDatabase coursesDB;
 
-    // Singly student list implementation.
-    Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
-    Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
-    Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
-    Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
+    // // TODO: add your implementation here to check if the code is working and for the rest to see your progress
+    // SinglyStudentDatabase studentsDB;
+    // PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
+    // BinaryTreeCourseDatabase coursesDB;
 
-    string courseName="math101";
-    studentsDB.addStudentRecord(student1);
-    studentsDB.addStudentRecord(student2);
-    studentsDB.addStudentRecord(student3);
-    studentsDB.addStudentRecord(student4);
+    // // Singly student list implementation.
+    // Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
+    // Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
+    // Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
+    // Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
 
-    variables[courseName]=new PrerequisiteCourseStack();
+    // string courseName = "math101";
+    // studentsDB.addStudentRecord(student1);
+    // studentsDB.addStudentRecord(student2);
+    // studentsDB.addStudentRecord(student3);
+    // studentsDB.addStudentRecord(student4);
 
-    // Stack implemenetation.
-    Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
-    Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", NULL);
-    prereqCourse1Stack->addToStack(course1);
-    student1->enrollmentHistory->addEnrollmentRecord(course1);
-    student1->enrollmentHistory->addEnrollmentRecord(course2);
-    student2->enrollmentHistory->addEnrollmentRecord(course2);
-    student3->enrollmentHistory->addEnrollmentRecord(course1);
+    // // Stack implemenetation.
+    // Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
+    // Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
+    // prereqCourse1Stack->addToStack(course1);
+    // student1->enrollmentHistory->addEnrollmentRecord(course1);
+    // student1->enrollmentHistory->addEnrollmentRecord(course2);
+    // student2->enrollmentHistory->addEnrollmentRecord(course2);
+    // student3->enrollmentHistory->addEnrollmentRecord(course1);
 
     // studentsDB.displayStudentDetails();
     // variables[courseName]->displayCoursePrerequisites();
@@ -709,9 +921,16 @@ int main()
     // NU.displayStudentsFromDB();
 
     // Binary Tree implementation.
-    coursesDB.addCourse(course1);
-    coursesDB.addCourse(course2);
-    coursesDB.displaytree(coursesDB.root);
+    // coursesDB.addCourse(course1);
+    // coursesDB.addCourse(course2);
+    // coursesDB.displaytree(coursesDB.root);
+    // coursesDB.getCourseByName(coursesDB.root, "lll Circuits");
+    NU.addCourseToDatabase();
+    NU.addCourseToDatabase();
+    NU.addStudentToDatabase();
+    
+    NU.displayStudentsFromDB();
+
     cout << "Code working..." << endl;
     return 0;
 }
