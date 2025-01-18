@@ -2,6 +2,7 @@
 #include <string>
 #include <windows.h>
 #include <stack>
+#include <map>
 
 //---------------------------------------ZEYAD Part----------------------------------
 // 1. Student Records Management: Use a Single Linked List (SLL) to store and manage
@@ -28,7 +29,6 @@
 using namespace std;
 
 // Function declarations (if any) can go here.
-class DoublyEnrollmentHistory;
 class PrerequisiteCourseStack;
 class Student;
 
@@ -166,6 +166,7 @@ class SinglyStudentDatabase // Singly Linked List for Student Records.
 public:
     SinglyStudentNode *head;
     SinglyStudentDatabase() : head(NULL) {}
+    int size = 0;
 
     /**
      * @brief Adds a new student record to the singly linked list of student records.
@@ -193,6 +194,7 @@ public:
             }
             tempStudentNode->next = newStudentNode;
         }
+        size++;
     }
 
     /**
@@ -210,6 +212,10 @@ public:
     {
         SinglyStudentNode *tempStudentNode = head;
         SinglyStudentNode *prev = NULL;
+        if (size == 0)
+        {
+            return;
+        };
         while (tempStudentNode)
         {
             if (tempStudentNode->student->ID == ID)
@@ -219,7 +225,7 @@ public:
                 else
                     head = tempStudentNode->next;
                 delete tempStudentNode;
-                cout << "Student Removed." << endl;
+                size--;
                 return;
             }
             prev = tempStudentNode;
@@ -237,7 +243,7 @@ public:
      */
     void displayStudentDetails()
     {
-        // TODO: display that there are no students in the database if there are none
+
         SinglyStudentNode *tempStudentNode = head;
         while (tempStudentNode)
         {
@@ -524,6 +530,11 @@ public:
     void displayCoursePrerequisites()
     {
         PrerequisiteCourseStackNode *tempCourseNode = top;
+        if (size == 0)
+        {
+            cout << "No Prerequisite Courses Found!" << endl;
+            return;
+        };
         while (tempCourseNode)
         {
             cout << tempCourseNode->course->courseName << endl;
@@ -580,35 +591,104 @@ public:
     }
 };
 
+class UniversityManagementSystem
+{
+public:
+    SinglyStudentDatabase studentsDB;
+    void addStudentToDatabase()
+    {
+        long long ID, phoneNumber;
+        string firstName, middleName, lastName, studentEmail, studentAddress, studentPassword;
+        cout << "Enter Student ID: ";
+        cin >> ID;
+        cin.ignore();
+        cout << "Enter First Name: ";
+        getline(cin, firstName);
+        cout << "Enter Middle Name: ";
+        getline(cin, middleName);
+        cout << "Enter Last Name: ";
+        getline(cin, lastName);
+        cout << "Enter Student Email: ";
+        getline(cin, studentEmail);
+        cout << "Enter Student Address: ";
+        getline(cin, studentAddress);
+        cout << "Enter Student Phone Number: ";
+        cin >> phoneNumber;
+        cin.ignore();
+        cout << "Enter Student Password: ";
+        getline(cin, studentPassword);
+        studentsDB.addStudentRecord(new Student(ID, firstName, middleName, lastName, studentEmail, phoneNumber, studentAddress, studentPassword));
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Student Added Successfully!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    };
+
+    void displayStudentsFromDB()
+    {
+        if (studentsDB.size == 0)
+        {
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "There are no students in the database" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            return;
+        }
+        studentsDB.displayStudentDetails();
+    }
+
+    void removeStudentFromDatabase()
+    {
+        if (studentsDB.size == 0)
+        {
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            cout << "There are no students in the database to remove" << endl;
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            return;
+        }
+        long long studentID;
+        cout << "Enter Student ID to Remove: ";
+        cin >> studentID;
+        studentsDB.removeStudentByID(studentID);
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Student Removed Successfully!" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    }
+};
 
 int main()
 {
-    // TODO: add your implementation here to check if the code is working and for the rest to see your progress
-    SinglyStudentDatabase studentDB;
-    SinglyStudentDatabase *studentDBPtr = &studentDB;
-    PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
+    UniversityManagementSystem NU;
+    // std::map<std::string, PrerequisiteCourseStack*> variables;
+    // // TODO: add your implementation here to check if the code is working and for the rest to see your progress
+    // SinglyStudentDatabase studentsDB;
+    // PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
 
-    // Singly student list implementation.
-    Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
-    Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
-    Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
-    Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
+    // // Singly student list implementation.
+    // Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
+    // Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
+    // Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
+    // Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
 
-    // student3->enrollmentHistory->addEnrollmentRecord(course3);
+    // // student3->enrollmentHistory->addEnrollmentRecord(course3);
+    // string courseName="math101";
+    // studentDB.addStudentRecord(student1);
+    // studentDB.addStudentRecord(student2);
+    // studentDB.addStudentRecord(student3);
+    // studentDB.addStudentRecord(student4);
 
-    studentDB.addStudentRecord(student1);
-    studentDB.addStudentRecord(student2);
-    studentDB.addStudentRecord(student3);
-    studentDB.addStudentRecord(student4);
-    
+    // variables[courseName]=new PrerequisiteCourseStack();
 
-    // Stack implemenetation.
-    Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
-    Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", NULL);
-    prereqCourse1Stack->addToStack(course1);
-    student1->enrollmentHistory->addEnrollmentRecord(course1);
-    student2->enrollmentHistory->addEnrollmentRecord(course2);
-    studentDB.displayStudentDetails();
+    // // Stack implemenetation.
+    // Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
+    // Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", NULL);
+    // prereqCourse1Stack->addToStack(course1);
+    // student1->enrollmentHistory->addEnrollmentRecord(course1);
+    // student2->enrollmentHistory->addEnrollmentRecord(course2);
+    // //studentDB.displayStudentDetails();
+    // variables[courseName]->displayCoursePrerequisites();
+    // NU.addStudentToDatabase();
+    // NU.displayStudentsFromDB();
+    NU.removeStudentFromDatabase();
+    NU.displayStudentsFromDB();
     cout << "Code working..." << endl;
     return 0;
 }
