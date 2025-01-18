@@ -451,6 +451,21 @@ public:
         }
         cout << "Course not found." << endl;
     }
+
+    void displaytree(BinaryTreeCourseNode *node)
+    {
+        if (node == NULL)
+        {
+            return;
+        }
+        displaytree(node->left);
+        cout << "Course ID: " << node->course->courseID << endl;
+        cout << "Course Name: " << node->course->courseName << endl;
+        cout << "Course Credits: " << node->course->courseCredits << endl;
+        cout << "Course Instructor: " << node->course->courseInstructor << endl;
+        cout << "-------------------------------------------" << endl;
+        displaytree(node->right);
+    }
 };
 
 class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
@@ -657,38 +672,46 @@ public:
 int main()
 {
     UniversityManagementSystem NU;
-    // std::map<std::string, PrerequisiteCourseStack*> variables;
-    // // TODO: add your implementation here to check if the code is working and for the rest to see your progress
-    // SinglyStudentDatabase studentsDB;
-    // PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
+    std::map<std::string, PrerequisiteCourseStack*> variables;
+    // TODO: add your implementation here to check if the code is working and for the rest to see your progress
+    SinglyStudentDatabase studentsDB;
+    PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
+    BinaryTreeCourseDatabase coursesDB;
 
-    // // Singly student list implementation.
-    // Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
-    // Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
-    // Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
-    // Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
+    // Singly student list implementation.
+    Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
+    Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
+    Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
+    Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
 
-    // // student3->enrollmentHistory->addEnrollmentRecord(course3);
-    // string courseName="math101";
-    // studentDB.addStudentRecord(student1);
-    // studentDB.addStudentRecord(student2);
-    // studentDB.addStudentRecord(student3);
-    // studentDB.addStudentRecord(student4);
+    string courseName="math101";
+    studentsDB.addStudentRecord(student1);
+    studentsDB.addStudentRecord(student2);
+    studentsDB.addStudentRecord(student3);
+    studentsDB.addStudentRecord(student4);
 
-    // variables[courseName]=new PrerequisiteCourseStack();
+    variables[courseName]=new PrerequisiteCourseStack();
 
-    // // Stack implemenetation.
-    // Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
-    // Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", NULL);
-    // prereqCourse1Stack->addToStack(course1);
-    // student1->enrollmentHistory->addEnrollmentRecord(course1);
-    // student2->enrollmentHistory->addEnrollmentRecord(course2);
-    // //studentDB.displayStudentDetails();
+    // Stack implemenetation.
+    Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
+    Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", NULL);
+    prereqCourse1Stack->addToStack(course1);
+    student1->enrollmentHistory->addEnrollmentRecord(course1);
+    student1->enrollmentHistory->addEnrollmentRecord(course2);
+    student2->enrollmentHistory->addEnrollmentRecord(course2);
+    student3->enrollmentHistory->addEnrollmentRecord(course1);
+
+    // studentsDB.displayStudentDetails();
     // variables[courseName]->displayCoursePrerequisites();
     // NU.addStudentToDatabase();
     // NU.displayStudentsFromDB();
-    NU.removeStudentFromDatabase();
-    NU.displayStudentsFromDB();
+    // NU.removeStudentFromDatabase();
+    // NU.displayStudentsFromDB();
+
+    // Binary Tree implementation.
+    coursesDB.addCourse(course1);
+    coursesDB.addCourse(course2);
+    coursesDB.displaytree(coursesDB.root);
     cout << "Code working..." << endl;
     return 0;
 }
