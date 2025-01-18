@@ -30,17 +30,7 @@ using namespace std;
 // Function declarations (if any) can go here.
 class DoublyEnrollmentHistory;
 class PrerequisiteCourseStack;
-
-class Student // Student Class that stores Student information.
-{
-public:
-    long long ID, phoneNumber;
-    string firstName, middleName, lastName, studentEmail, studentAddress, studentPassword;
-    DoublyEnrollmentHistory *enrollmentHistory;
-
-    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password, DoublyEnrollmentHistory *studentEnrollmentHistory)
-        : ID(uni_ID), firstName(uni_first_name), middleName(uni_middle_name), lastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password), enrollmentHistory(studentEnrollmentHistory) {}
-};
+class Student;
 
 class Course // Course Class that stores Course information.
 {
@@ -53,34 +43,6 @@ public:
 
     Course(long long uni_course_ID, string uni_course_name, double uni_course_credits, string uni_course_instructor, PrerequisiteCourseStack *coursePrereqStack)
         : courseID(uni_course_ID), courseName(uni_course_name), courseCredits(uni_course_credits), courseInstructor(uni_course_instructor), prereqStack(coursePrereqStack) {}
-};
-
-class SinglyStudentNode // Node for Singly Linked List of Student Records.
-{
-public:
-    Student *student;
-    SinglyStudentNode *next;
-
-    SinglyStudentNode(Student *s) : student(s), next(NULL) {}
-};
-
-class BinaryTreeCourseNode // Node for Binary Tree of Course Records.
-{
-public:
-    Course *course;
-    BinaryTreeCourseNode *left;
-    BinaryTreeCourseNode *right;
-
-    BinaryTreeCourseNode(Course *c) : course(c), left(NULL), right(NULL) {}
-};
-
-class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
-{
-public:
-    Course *course;
-    PrerequisiteCourseStackNode *next;
-
-    PrerequisiteCourseStackNode(Course *c) : course(c), next(NULL) {}
 };
 
 class DoublyEnrollmentNode // Node for Doubly Linked List of Course Enrollment History.
@@ -177,6 +139,26 @@ public:
         }
         return false;
     }
+};
+
+class Student // Student Class that stores Student information.
+{
+public:
+    long long ID, phoneNumber;
+    string firstName, middleName, lastName, studentEmail, studentAddress, studentPassword;
+    DoublyEnrollmentHistory *enrollmentHistory = new DoublyEnrollmentHistory();
+
+    Student(long long uni_ID, string uni_first_name, string uni_middle_name, string uni_last_name, string uni_student_email, long long uni_phone_number, string uni_student_address, string uni_student_password)
+        : ID(uni_ID), firstName(uni_first_name), middleName(uni_middle_name), lastName(uni_last_name), studentEmail(uni_student_email), phoneNumber(uni_phone_number), studentAddress(uni_student_address), studentPassword(uni_student_password) {}
+};
+
+class SinglyStudentNode // Node for Singly Linked List of Student Records.
+{
+public:
+    Student *student;
+    SinglyStudentNode *next;
+
+    SinglyStudentNode(Student *s) : student(s), next(NULL) {}
 };
 
 class SinglyStudentDatabase // Singly Linked List for Student Records.
@@ -297,6 +279,16 @@ public:
         }
         return NULL;
     }
+};
+
+class BinaryTreeCourseNode // Node for Binary Tree of Course Records.
+{
+public:
+    Course *course;
+    BinaryTreeCourseNode *left;
+    BinaryTreeCourseNode *right;
+
+    BinaryTreeCourseNode(Course *c) : course(c), left(NULL), right(NULL) {}
 };
 
 class BinaryTreeCourseDatabase // Binary Tree for Course Database.
@@ -455,6 +447,15 @@ public:
     }
 };
 
+class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
+{
+public:
+    Course *course;
+    PrerequisiteCourseStackNode *next;
+
+    PrerequisiteCourseStackNode(Course *c) : course(c), next(NULL) {}
+};
+
 class PrerequisiteCourseStack // Stack that contains the Prerequisite Courses for a Student to register for a certain Course.
 {
 public:
@@ -579,22 +580,19 @@ public:
     }
 };
 
+
 int main()
 {
     // TODO: add your implementation here to check if the code is working and for the rest to see your progress
     SinglyStudentDatabase studentDB;
     SinglyStudentDatabase *studentDBPtr = &studentDB;
     PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
-    DoublyEnrollmentHistory *student1EnrollmentHistory = new DoublyEnrollmentHistory();
-    DoublyEnrollmentHistory *student2EnrollmentHistory = new DoublyEnrollmentHistory();
-    DoublyEnrollmentHistory *student3EnrollmentHistory = new DoublyEnrollmentHistory();
-    DoublyEnrollmentHistory *student4EnrollmentHistory = new DoublyEnrollmentHistory();
 
     // Singly student list implementation.
-    Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123", student1EnrollmentHistory);
-    Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234", student2EnrollmentHistory);
-    Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345", student3EnrollmentHistory);
-    Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456", student4EnrollmentHistory);
+    Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
+    Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
+    Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
+    Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
 
     // student3->enrollmentHistory->addEnrollmentRecord(course3);
 
@@ -602,7 +600,7 @@ int main()
     studentDB.addStudentRecord(student2);
     studentDB.addStudentRecord(student3);
     studentDB.addStudentRecord(student4);
-    // studentDB.displayStudentDetails();
+    
 
     // Stack implemenetation.
     Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
@@ -610,7 +608,7 @@ int main()
     prereqCourse1Stack->addToStack(course1);
     student1->enrollmentHistory->addEnrollmentRecord(course1);
     student2->enrollmentHistory->addEnrollmentRecord(course2);
-
+    studentDB.displayStudentDetails();
     cout << "Code working..." << endl;
     return 0;
 }
