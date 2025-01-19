@@ -4,33 +4,11 @@
 #include <stack>
 #include <map>
 
-//---------------------------------------ZEYAD Part----------------------------------
-// 1. Student Records Management: Use a Single Linked List (SLL) to store and manage
-// student details.
-// 2. Course Records Management: Implement a Binary Search Tree (BST) to organize
-// and search course information.
-//
-//---------------------------------------Omar Part----------------------------------
-// 3. Course Enrollment History: Employ a Double Linked List (DLL) to track each
-// student's course history.
-// 4. Course Prerequisites: Use a Stack to validate prerequisites for course registration.
-//
-//---------------------------------------Mazen Part---------------------------------
-// 5. Course Waitlists: Manage waitlists with a Queue.
-// 6. Search Optimization: Implement Linear and Binary Search algorithms.
-//
-// Important Notes
-// 1. Proper Variable Names
-// 2. Single responsibility principle
-// 3. Commit every time you add a new feature or change an old feature with a proper
-//    message that explains what happened
-// 4. Clean Code of course
-
 using namespace std;
 
-// Function declarations (if any) can go here.
 class PrerequisiteCourseStack;
 class Student;
+void startUniversityManagmentSystem();
 
 class Course // Course Class that stores Course information.
 {
@@ -714,6 +692,19 @@ class UniversityManagementSystem
     map<string, PrerequisiteCourseStack *> variables;
 
 public:
+    void returnToMenu(){
+        int choice;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        cout << "Return to Main Menu?" << endl;
+        cout << "1. Yes" << endl;
+        cout << "2. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        if (choice == 1){
+            startUniversityManagmentSystem();
+        }
+        return;
+    }
     void addStudentToDatabase()
     {
         long long ID, phoneNumber;
@@ -740,6 +731,7 @@ public:
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         cout << "Student Added Successfully!" << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        returnToMenu();
     };
 
     void displayStudentsFromDB()
@@ -752,6 +744,7 @@ public:
             return;
         }
         studentsDB.displayStudentDetails();
+        returnToMenu();
     }
 
     void removeStudentFromDatabase()
@@ -770,6 +763,7 @@ public:
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         cout << "Student Removed Successfully!" << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        returnToMenu();
     }
 
     void askForPrerequisiteCourse(PrerequisiteCourseStack *prereqStack)
@@ -831,6 +825,7 @@ public:
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         cout << "Course Added Successfully!" << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        returnToMenu();
     }
 
     void displayCoursesFromDB()
@@ -843,6 +838,7 @@ public:
             return;
         }
         coursesDB.displaytree(coursesDB.root);
+        returnToMenu();
     }
 
     void removeCourseFromDatabase()
@@ -861,6 +857,7 @@ public:
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         cout << "Course Removed Successfully!" << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        returnToMenu();
     }
 
     void addEnrollmentRecordToStudent()
@@ -877,7 +874,7 @@ public:
         {
             cout << "Course or Student does not exist! Enter 1 to re-enter or 0 to Exit: ";
             cin >> choice;
-            if (choice == 0) return;
+            if (choice == 0) returnToMenu();
             addEnrollmentRecordToStudent();
             return;
         };
@@ -888,6 +885,7 @@ public:
             cout << "Enrollment record added successfully!" << endl;
             return;
         };
+        returnToMenu();
     }
 
     void displayEnrollmentRecordsByStudent()
@@ -906,39 +904,122 @@ public:
         cout << "Student not found! To enter a valid student ID [1] or [0] to EXIT: ";
         cin >> choice;
         if (choice == 0)
-            return;
+            returnToMenu();
         displayEnrollmentRecordsByStudent();
+        returnToMenu();
     }
 
     void checkIfPrereqsAreMet()
     {
         long long studentID, courseID;
-
+        int choice;
         cout << "Enter the student ID: ";
         cin >> studentID;
         cout << "Enter the course ID: ";
         cin >> courseID;
-        if (!coursesDB.isCourseExistById(coursesDB.root, courseID))
+        Course *course = coursesDB.getCourseByID(coursesDB.root, courseID);
+        Student *student = studentsDB.getStudentByID(studentID);
+        if (!coursesDB.isCourseExistById(coursesDB.root, courseID) && student==NULL)
         {
-            cout << "Course does not exist! Change the course Id" << endl;
+            cout << "Course or Student does not exist! Enter 1 to re-enter or 0 To Exit: ";
+            cin >> choice;
+            if (choice == 0) returnToMenu();
             addEnrollmentRecordToStudent();
             return;
         };
-        Course *course = coursesDB.getCourseByID(coursesDB.root, courseID);
-        Student *student = studentsDB.getStudentByID(studentID);
+        
         if (course->prereqStack->validateCoursePrerequisites(studentID, &studentsDB))
         {
             cout << "Student can take this course" << endl;
-            return;
         };
+        returnToMenu();
+    }
+};
+
+UniversityManagementSystem NU;
+
+void startUniversityManagmentSystem()
+{
+    
+    int choice;
+    cout << "=================================================================================================================";
+    cout << "\nUniversity Management System Menu\n";
+    cout << " 1. Add Student\n";
+    cout << " 2. Remove Students by ID\n";
+    cout << " 3. Display All students\n";
+    cout << " 4. Add Course\n";
+    cout << " 5. Remove Course By ID\n";
+    cout << " 6. View All Courses\n";
+    cout << " 7. Enroll Student in a Course\n";
+    cout << " 8. Display Student Enrollment History\n";
+    cout << " 9. Check If Student Finshed The Course Prerequisite Courses\n";
+    cout << "10. Exit\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+    {
+        NU.addStudentToDatabase();
+        break;
+    }
+    case 2:
+    {
+        NU.removeStudentFromDatabase();
+        break;
+    }
+    case 3:
+    {
+        NU.displayStudentsFromDB();
+        break;
+    }
+    case 4:
+    {
+        NU.addCourseToDatabase();
+        break;
+    }
+    case 5:
+    {
+        NU.removeCourseFromDatabase();
+        break;
+    }
+    case 6:
+    {
+        NU.displayCoursesFromDB();
+        break;
+    }
+    case 7:
+    {
+        NU.addEnrollmentRecordToStudent();
+        break;
+    }
+    case 8:
+    {
+        NU.displayEnrollmentRecordsByStudent();
+        break;
+    }
+    case 9:
+    {
+        NU.checkIfPrereqsAreMet();
+        break;
+    }
+    case 10:
+    {
+        cout << "Exiting the University Management System. Goodbye!" << endl;
+        return;
+        break;
+    }
+    default:
+    {
+        cout << "Invalid choice. Please enter a number between 1 and 10." << endl;
+        break;
+    }
     }
 };
 
 int main()
 {
-    UniversityManagementSystem NU;
-    NU.addEnrollmentRecordToStudent();
-
-    cout << "Code working..." << endl;
+    startUniversityManagmentSystem();
     return 0;
 }
