@@ -247,6 +247,8 @@ public:
         SinglyStudentNode *tempStudentNode = head;
         while (tempStudentNode)
         {
+            cout << "-------------------------------------------" << endl;
+            cout << "Students Database:" << endl;
             cout << "Student ID: " << tempStudentNode->student->ID << endl;
             cout << "Student First Name: " << tempStudentNode->student->firstName << endl;
             cout << "Student Middle Name: " << tempStudentNode->student->middleName << endl;
@@ -256,7 +258,7 @@ public:
             cout << "Student Address: " << tempStudentNode->student->studentAddress << endl;
             cout << "Student Enrollment History:" << endl;
             tempStudentNode->student->enrollmentHistory->displayEnrollmentHistory();
-            cout << "---------------------------------------------------------" << endl;
+            cout << "-------------------------------------------" << endl;
             tempStudentNode = tempStudentNode->next;
         }
     }
@@ -374,7 +376,7 @@ public:
         while (tempCourseNode)
         {
 
-            cout << "                     " << tempCourseNode->course->courseName << endl;
+            cout << "                     Course: " << tempCourseNode->course->courseName << endl;
             tempCourseNode = tempCourseNode->next;
         }
     }
@@ -420,7 +422,6 @@ public:
 
         while (tempCourseNode && student && size != 0)
         {
-            popFromStack();
             if (student->enrollmentHistory->checkCourseExistence(tempCourseNode->course) == false)
             {
                 prereqCoursesToBeTaken.push(tempCourseNode);
@@ -430,7 +431,10 @@ public:
 
         while (!prereqCoursesToBeTaken.empty())
         {
-            addToStack(prereqCoursesToBeTaken.top()->course);
+            if (!isPrereqExistByID(prereqCoursesToBeTaken.top()->course->courseID))
+            {
+                addToStack(prereqCoursesToBeTaken.top()->course);
+            }
             prereqCoursesToBeTaken.pop();
         };
         if (size == 0)
@@ -705,10 +709,11 @@ public:
 
 class UniversityManagementSystem
 {
-public:
     SinglyStudentDatabase studentsDB;
     BinaryTreeCourseDatabase coursesDB;
-    std::map<std::string, PrerequisiteCourseStack *> variables;
+    map<string, PrerequisiteCourseStack *> variables;
+
+public:
     void addStudentToDatabase()
     {
         long long ID, phoneNumber;
@@ -858,78 +863,81 @@ public:
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
     }
 
-    // void addEnrollmentRecordToStudent()
-    // {
-    //     long long studentID, courseID;
+    void addEnrollmentRecordToStudent()
+    {
+        long long studentID, courseID;
+        int choice;
+        cout << "Enter the student ID to add an enrollment record: ";
+        cin >> studentID;
+        cout << "Enter the course ID that the student will enroll in: ";
+        cin >> courseID;
+        Course *course = coursesDB.getCourseByID(coursesDB.root, courseID);
+        Student *student = studentsDB.getStudentByID(studentID);
+        if (!coursesDB.isCourseExistById(coursesDB.root, courseID) && student == NULL)
+        {
+            cout << "Course or Student does not exist! Enter 1 to re-enter or 0 to Exit: ";
+            cin >> choice;
+            if (choice == 0) return;
+            addEnrollmentRecordToStudent();
+            return;
+        };
+        
+        if (course->prereqStack->validateCoursePrerequisites(studentID, &studentsDB))
+        {
+            student->enrollmentHistory->addEnrollmentRecord(course);
+            cout << "Enrollment record added successfully!" << endl;
+            return;
+        };
+    }
 
-    //     cout << "Enter the student ID to add an enrollment record:";
-    //     cin >> studentID;
-    //     cout << "Enter the course ID that the student will enroll in:";
-    //     cin >> courseID;
-    //     if (!coursesDB.isCourseExistById(coursesDB.root, courseID))
-    //     {
-    //         cout << "Course does not exist! Change the course Id" << endl;
-    //         addEnrollmentRecordToStudent();
-    //         return;
-    //     };
-    //     Course *course = coursesDB.getCourseByID(coursesDB.root, courseID);
-    //     Student *student = studentsDB.getStudentByID(studentID);
-    //     if (course->prereqStack->validateCoursePrerequisites(student))
-    //     {
-    //         student->enrollmentHistory->addEnrollmentRecord(course);
-    //         cout << "Enrollment record added successfully!" << endl;
-    //         return;
-    //     };
-    // }
+    void displayEnrollmentRecordsByStudent()
+    {
+        long long studentID;
+        int choice;
+        cout << "Enter the student ID to display their enrollment records: ";
+        cin >> studentID;
+        Student *student = studentsDB.getStudentByID(studentID);
+        if (student != nullptr)
+        {
+            student->enrollmentHistory->displayEnrollmentHistory();
+            return;
+        }
+
+        cout << "Student not found! To enter a valid student ID [1] or [0] to EXIT: ";
+        cin >> choice;
+        if (choice == 0)
+            return;
+        displayEnrollmentRecordsByStudent();
+    }
+
+    void checkIfPrereqsAreMet()
+    {
+        long long studentID, courseID;
+
+        cout << "Enter the student ID: ";
+        cin >> studentID;
+        cout << "Enter the course ID: ";
+        cin >> courseID;
+        if (!coursesDB.isCourseExistById(coursesDB.root, courseID))
+        {
+            cout << "Course does not exist! Change the course Id" << endl;
+            addEnrollmentRecordToStudent();
+            return;
+        };
+        Course *course = coursesDB.getCourseByID(coursesDB.root, courseID);
+        Student *student = studentsDB.getStudentByID(studentID);
+        if (course->prereqStack->validateCoursePrerequisites(studentID, &studentsDB))
+        {
+            cout << "Student can take this course" << endl;
+            return;
+        };
+    }
 };
 
 int main()
 {
     UniversityManagementSystem NU;
-
-    // // TODO: add your implementation here to check if the code is working and for the rest to see your progress
-    // SinglyStudentDatabase studentsDB;
-    // PrerequisiteCourseStack *prereqCourse1Stack = new PrerequisiteCourseStack();
-    // BinaryTreeCourseDatabase coursesDB;
-
-    // // Singly student list implementation.
-    // Student *student1 = new Student(231000491, "Omar", "Tamer", "AbouHussein", "O.Tamer2391@nu.edu.eg", 010200, "80th Pickle Jar Street", "verysecurepassword@heilhit123");
-    // Student *student2 = new Student(231000010, "Zeyad", "Ahmed", "Mohamed", "Z.Ahmed2310@nu.edu.eg", 010, "81st Pickle Jar Street", "verysecurepassword@heilhit1234");
-    // Student *student3 = new Student(231000119, "Mohamed", "Abdellatif", "Abdellatif", "M.Abdellatif2319@nu.edu.eg", 010200, "82nd Pickle Jar Street", "verysecurepassword@heilhit12345");
-    // Student *student4 = new Student(231000137, "Mazen", "Ahmed", "El-Mallah", "M.ElMallah2337@nu.edu.eg", 0102, "83rd Pickle Jar Street", "verysecurepassword@heilhit123456");
-
-    // string courseName = "math101";
-    // studentsDB.addStudentRecord(student1);
-    // studentsDB.addStudentRecord(student2);
-    // studentsDB.addStudentRecord(student3);
-    // studentsDB.addStudentRecord(student4);
-
-    // // Stack implemenetation.
-    // Course *course1 = new Course(101, "Electric Circuits", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
-    // Course *course2 = new Course(211, "Discrete Mathematics", 3.0, "Tamer Abu Elfadl", prereqCourse1Stack);
-    // prereqCourse1Stack->addToStack(course1);
-    // student1->enrollmentHistory->addEnrollmentRecord(course1);
-    // student1->enrollmentHistory->addEnrollmentRecord(course2);
-    // student2->enrollmentHistory->addEnrollmentRecord(course2);
-    // student3->enrollmentHistory->addEnrollmentRecord(course1);
-
-    // studentsDB.displayStudentDetails();
-    // variables[courseName]->displayCoursePrerequisites();
-    // NU.addStudentToDatabase();
-    // NU.displayStudentsFromDB();
-    // NU.removeStudentFromDatabase();
-    // NU.displayStudentsFromDB();
-
-    // Binary Tree implementation.
-    // coursesDB.addCourse(course1);
-    // coursesDB.addCourse(course2);
-    // coursesDB.displaytree(coursesDB.root);
-    // coursesDB.getCourseByName(coursesDB.root, "lll Circuits");
-    NU.addCourseToDatabase();
-    NU.addCourseToDatabase();
-    NU.addStudentToDatabase();
-    
-    NU.displayStudentsFromDB();
+    NU.addEnrollmentRecordToStudent();
 
     cout << "Code working..." << endl;
     return 0;
