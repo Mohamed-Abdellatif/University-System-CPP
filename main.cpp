@@ -962,81 +962,84 @@ UniversityManagementSystem NU;
 
 void startUniversityManagmentSystem()
 {
-    
-    int choice;
-    cout << "=================================================================================================================";
-    cout << "\nUniversity Management System Menu\n";
-    cout << " 1. Add Student\n";
-    cout << " 2. Remove Students by ID\n";
-    cout << " 3. Display All students\n";
-    cout << " 4. Add Course\n";
-    cout << " 5. Remove Course By ID\n";
-    cout << " 6. View All Courses\n";
-    cout << " 7. Enroll Student in a Course\n";
-    cout << " 8. Display Student Enrollment History\n";
-    cout << " 9. Check If Student Finshed The Course Prerequisite Courses\n";
-    cout << "10. Exit\n";
-    cout << "Enter your choice: ";
-    cin >> choice;
-
-    switch (choice)
-    {
-    case 1:
-    {
-        NU.addStudentToDatabase();
-        break;
-    }
-    case 2:
-    {
-        NU.removeStudentFromDatabase();
-        break;
-    }
-    case 3:
-    {
-        NU.displayStudentsFromDB();
-        break;
-    }
-    case 4:
-    {
-        NU.addCourseToDatabase();
-        break;
-    }
-    case 5:
-    {
-        NU.removeCourseFromDatabase();
-        break;
-    }
-    case 6:
-    {
-        NU.displayCoursesFromDB();
-        break;
-    }
-    case 7:
-    {
-        NU.addEnrollmentRecordToStudent();
-        break;
-    }
-    case 8:
-    {
-        NU.displayEnrollmentRecordsByStudent();
-        break;
-    }
-    case 9:
-    {
-        NU.checkIfPrereqsAreMet();
-        break;
-    }
-    case 10:
-    {
-        cout << "Exiting the University Management System. Goodbye!" << endl;
-        return;
-        break;
-    }
-    default:
-    {
-        cout << "Invalid choice. Please enter a number between 1 and 10." << endl;
-        break;
-    }
+    while (true){
+        int choice;
+        cout << "===================================================" << "\n";
+        cout << "         University Management System Menu"          << "\n";
+        cout << "===================================================" << "\n";
+        cout << " 1. Add Student"                                     << "\n";
+        cout << " 2. Remove Students by ID"                           << "\n";
+        cout << " 3. Display All students"                            << "\n";
+        cout << " 4. Add Course"                                      << "\n";
+        cout << " 5. Remove Course by ID"                             << "\n";
+        cout << " 6. View All Courses"                                << "\n";
+        cout << " 7. Enroll Student in Course"                        << "\n";
+        cout << " 8. Display Student Enrollment History"              << "\n";
+        cout << " 9. Check If Student Finished Course Prerequisites"  << "\n";
+        cout << "10. Exit"                                            << "\n";
+        cout << "===================================================" << "\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        
+        switch (choice)
+        {
+        case 1:
+        {
+            NU.addStudentToDatabase();
+            break;
+        }
+        case 2:
+        {
+            NU.removeStudentFromDatabase();
+            break;
+        }
+        case 3:
+        {
+            NU.displayStudentsFromDB();
+            break;
+        }
+        case 4:
+        {
+            NU.addCourseToDatabase();
+            break;
+        }
+        case 5:
+        {
+            NU.removeCourseFromDatabase();
+            break;
+        }
+        case 6:
+        {
+            NU.displayCoursesFromDB();
+            break;
+        }
+        case 7:
+        {
+            NU.addEnrollmentRecordToStudent();
+            break;
+        }
+        case 8:
+        {
+            NU.displayEnrollmentRecordsByStudent();
+            break;
+        }
+        case 9:
+        {
+            NU.checkIfPrereqsAreMet();
+            break;
+        }
+        case 10:
+        {
+            cout << "Exiting the University Management System. Goodbye!" << endl;
+            return;
+            break;
+        }
+        default:
+        {
+            cout << "Invalid choice. Please enter a number between 1 and 10." << endl;
+            break;
+        }
+        }
     }
 };
 
