@@ -344,6 +344,40 @@ public:
         }
         return NULL;
     }
+/**
+     * @brief Sorts the students in ascending order by ID using Bubble Sort
+     *
+     * This function iterates through the singly linked list and swaps student objects (pointers)
+     * instead of actual values, (swapping values in a linked list is inefficient).
+     */
+    void bubbleSortByID()
+    {
+        if (!head || !head->next)
+        {
+            return; // No need to sort empty or single-element list
+        }
+        bool swapped;
+        SinglyStudentNode *current;
+        SinglyStudentNode *lastSorted = nullptr;
+        do
+        {
+            swapped = false;
+            current = head;
+            while (current->next != lastSorted)
+            {
+                if (current->student->ID > current->next->student->ID)
+                {
+                    // Swap student pointers
+                    Student *temp = current->student;
+                    current->student = current->next->student;
+                    current->next->student = temp;
+                    swapped = true;
+                }
+                current = current->next;
+            }
+            lastSorted = current; // Mark last sorted node
+        } while (swapped);
+    }
 };
 
 class PrerequisiteCourseStackNode // Node for the Prerequisite Stack made using Singly Linked List implementation.
