@@ -754,47 +754,42 @@ public:
 
     Course *getCourseByID(BinaryTreeCourseNode *node, long long courseID)
     {
-
         if (node == NULL)
         {
             return nullptr;
         }
-
-        Course *leftResult = getCourseByID(node->left, courseID);
-        if (leftResult != nullptr)
-        {
-            return leftResult;
-        }
-
-        // Check the current node
-        if (node->course->courseID == courseID)
+        if (node->course->courseID == courseID) 
         {
             return node->course;
         }
-
-        return getCourseByID(node->right, courseID);
+        else if (courseID < node->course->courseID) 
+        {
+            return getCourseByID(node->left, courseID); // Search in left subtree
+        }
+        else 
+        {
+            return getCourseByID(node->right, courseID); // Search in right subtree
+        }
     }
+
     bool isCourseExistById(BinaryTreeCourseNode *node, long long courseID)
     {
-
         if (node == NULL)
         {
             return false;
         }
-
-        bool leftResult = isCourseExistById(node->left, courseID);
-        if (leftResult)
-        {
-            return leftResult;
-        }
-
-        // Check the current node
-        if (node->course->courseID == courseID)
+        if (node->course->courseID == courseID) 
         {
             return true;
         }
-
-        return isCourseExistById(node->right, courseID);
+        else if (courseID < node->course->courseID) 
+        {
+            return isCourseExistById(node->left, courseID);
+        }
+        else 
+        {
+            return isCourseExistById(node->right, courseID);
+        }
     }
 };
 
