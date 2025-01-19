@@ -32,6 +32,62 @@ class PrerequisiteCourseStack;
 class Student;
 void startUniversityManagmentSystem();
 
+class WaitlistQueueNode {
+public:
+    Student* student;  // Student in waitlist
+    WaitlistQueueNode* next;  // Pointer to next node in queue
+    WaitlistQueueNode(Student* student) : student(student), next(nullptr) {}
+};
+
+class WaitlistQueue {
+public:
+    WaitlistQueueNode* front;
+    WaitlistQueueNode* rear;
+
+    WaitlistQueue() : front(nullptr), rear(nullptr) {}
+
+    // Enqueue a student to the waitlist
+    void enqueue(Student* student) {
+        WaitlistQueueNode* newNode = new WaitlistQueueNode(student);
+        if (rear == nullptr) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
+
+    Student* dequeue() {
+        if (front == nullptr) {
+            return nullptr;  // Queue empty
+        }
+        WaitlistQueueNode* temp = front;
+        Student* student = front->student;
+        front = front->next;
+        if (front == nullptr) {
+            rear = nullptr;  // If queue becomes empty
+        }
+        delete temp;  // Cleanup
+        return student;
+    }
+    
+    bool isEmpty() {
+        return front == nullptr;
+    }
+// Display all students in the waitlist
+    void displayWaitlist() {
+        if (isEmpty()) {
+            cout << "Waitlist is empty!" << endl;
+            return;
+        }
+
+        WaitlistQueueNode* temp = front;
+        while (temp != nullptr) {
+            cout << "Student ID: " << temp->student->ID << ", Name: " << temp->student->firstName << " " << temp->student->lastName << endl;
+            temp = temp->next;
+        }
+    }
+};
 class Course // Course Class that stores Course information.
 {
 public:
